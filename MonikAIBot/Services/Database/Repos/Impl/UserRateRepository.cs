@@ -56,7 +56,7 @@ namespace MonikAIBot.Services.Database.Repos.Impl
                 _context.SaveChanges();
             }
 
-            if (UR.PostsSinceTracking > MaxImageCount)
+            if (UR.PostsSinceTracking >= MaxImageCount)
                 return false;
 
             return true;
