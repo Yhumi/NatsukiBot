@@ -13,6 +13,8 @@ namespace MonikAIBot
 {
     public class Program
     {
+        //Hehe
+
         private readonly DiscordSocketClient _client;
         private readonly IServiceCollection _map = new ServiceCollection();
         private readonly CommandService _commands = new CommandService(new CommandServiceConfig
