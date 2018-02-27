@@ -9,6 +9,9 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 
+//henlo world
+//messaging best admin, i am number 2 best
+
 namespace MonikAIBot
 {
     public class Program
