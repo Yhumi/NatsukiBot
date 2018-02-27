@@ -40,7 +40,7 @@ namespace MonikAIBot
 
         public async Task AsyncMain()
         {
-            _config = JsonConvert.DeserializeObject<Configuration>(File.ReadAllText(@"Data/config.json"));
+            _config = JsonConvert.DeserializeObject<Configuration>(File.ReadAllText(@"data/config.json"));
             _random = new Random();
 
             //Command Setup
