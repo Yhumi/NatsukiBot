@@ -227,14 +227,14 @@ namespace MonikAIBot.Modules
             {
                 await Context.Channel.SendErrorAsync("That is not a valid date.");
                 return;
-
-                using (var uow = DBHandler.UnitOfWork())
-                {
-                    uow.User.SetUserBirthday(user.Id, dt);
-                }
-
-                await Context.Channel.SendSuccessAsync($"Added Birthday for {user.Username}.");
             }
+
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                uow.User.SetUserBirthday(user.Id, dt);
+            }
+
+            await Context.Channel.SendSuccessAsync($"Added Birthday for {user.Username}.");
         }
 
         [Command("TestBirthdays"), Summary("Tests the birthdays")]
