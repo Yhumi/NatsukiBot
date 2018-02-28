@@ -11,6 +11,7 @@ namespace MonikAIBot.Services.Database
         IChannelsRepository Channels { get; }
         IUserRepository User { get; }
         IUserRateRepository UserRate { get; }
+        IGuildRepository Guild { get; }
 
         int Complete();
         Task<int> CompleteAsync();

@@ -20,6 +20,9 @@ namespace MonikAIBot.Services.Database
         private IUserRateRepository _userRate;
         public IUserRateRepository UserRate => _userRate ?? (_userRate = new UserRateRepository(_context));
 
+        private IGuildRepository _guild;
+        public IGuildRepository Guild => _guild ?? (_guild = new GuildRepository(_context));
+
         public UnitOfWork(DBContext context)
         {
             _context = context;

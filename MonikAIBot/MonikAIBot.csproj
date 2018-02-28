@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Services\Database\Models\Server.cs" />
     <Compile Remove="Services\Database\Repos\Impl\ServerRepository.cs" />
     <Compile Remove="Services\Database\Repos\IServerRepository.cs" />
   </ItemGroup>

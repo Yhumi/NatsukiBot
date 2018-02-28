@@ -60,6 +60,7 @@ namespace MonikAIBot
 
             provider.GetRequiredService<CommandHandler>();
             provider.GetRequiredService<ImageRateLimitHandler>();
+            provider.GetRequiredService<DeletedMessageHandler>();
 
             //Start birthdays
             int hours = 9;
@@ -84,6 +85,7 @@ namespace MonikAIBot
             _map.AddSingleton(_commands);
             _map.AddSingleton<CommandHandler>();
             _map.AddSingleton<ImageRateLimitHandler>();
+            _map.AddSingleton<DeletedMessageHandler>();
             _map.AddSingleton(_config);
         }
 

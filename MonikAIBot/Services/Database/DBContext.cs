@@ -20,6 +20,7 @@ namespace MonikAIBot.Services.Database
         public DbSet<Channels> Channels { get; set; }
         public DbSet<User> User { get; set; }
         public DbSet<UserRate> UserRate { get; set; }
+        public DbSet<Guild> Guild { get; set; }
 
         public DBContext() : base()
         {
@@ -49,6 +50,13 @@ namespace MonikAIBot.Services.Database
             var userRateEntity = modelBuilder.Entity<UserRate>();
             userRateEntity
                 .HasIndex(d => d.ID)
+                .IsUnique();
+            #endregion
+
+            #region Guild
+            var guildEntity = modelBuilder.Entity<Guild>();
+            guildEntity
+                .HasIndex(d => d.GuildID)
                 .IsUnique();
             #endregion
         }

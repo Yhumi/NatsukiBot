@@ -316,5 +316,56 @@ namespace MonikAIBot.Modules
 
             await Context.Channel.BlankEmbedAsync(embed);
         }
+
+        [Command("SetDeletedLogChannel")]
+        [Alias("SDLC")]
+        [OwnerOnly]
+        public async Task SetDeletedLogChannel(IGuildChannel channel)
+        {
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                uow.Guild.SetGuildDelChannel(Context.Guild.Id, channel.Id);
+            }
+
+            await Context.Channel.SendSuccessAsync($"Set guild's delete log channel to: {channel.Name}");
+        }
+
+        [Command("SetDeleteLog")]
+        [Alias("SDL")]
+        [OwnerOnly]
+        public async Task SetDeleteLog(bool t)
+        {
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                uow.Guild.SetGuildDelLogEnabled(Context.Guild.Id, t);
+            }
+
+            string ret = "";
+            if (t)
+                ret = "Turned on deletion logging for this server.";
+            else
+                ret = "Turned off deletion logging for this server.";
+
+            await Context.Channel.SendSuccessAsync(ret);
+        }
+
+        [Command("IsDeleteLoggingEnabled")]
+        [Alias("IDLE")]
+        [OwnerOnly]
+        public async Task IsDeleteLoggingEnabled()
+        {
+            Guild G = null;
+            string Status = "Disabled.";
+            
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                G = uow.Guild.GetOrCreateGuild(Context.Guild.Id);
+            }
+
+            if (G.DeleteLogEnabled)
+                Status = "Eanbled.";
+
+            await Context.Channel.SendSuccessAsync("Logging", $"State: {Status} | ChannelID: {G.DeleteLogChannel}");
+        }
     }
 }
