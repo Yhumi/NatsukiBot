@@ -285,7 +285,7 @@ namespace MonikAIBot.Modules
 
         [Command("ShowBirthdays")]
         [OwnerOnly]
-        public async Task ShowBirthdays(int page = 0)
+        public async Task ShowBirthdays(int page = 0, [Remainder] string f = @"dd'/'MM'/'yyyy")
         {
             if (page != 0)
                 page -= 1;
@@ -302,13 +302,13 @@ namespace MonikAIBot.Modules
                 return;
             }
 
-            EmbedBuilder embed = new EmbedBuilder().WithQuoteColour().WithTitle("Birthdays").WithFooter(efb => efb.WithText($"Page: {page + 1}"));
+            EmbedBuilder embed = new EmbedBuilder().WithQuoteColour().WithTitle($"Birthdays | Format: {f}").WithFooter(efb => efb.WithText($"Page: {page + 1}"));
 
             foreach (User u in Users)
             {
                 IGuildUser user = await Context.Guild.GetUserAsync(u.UserID);
                 string username = user?.Username ?? u.UserID.ToString();
-                EmbedFieldBuilder efb = new EmbedFieldBuilder().WithName(username).WithValue(u.DateOfBirth.ToString(@"dd'/'MM'/'yyyy")).WithIsInline(true);
+                EmbedFieldBuilder efb = new EmbedFieldBuilder().WithName(username).WithValue(u.DateOfBirth.ToString(f)).WithIsInline(true);
 
                 embed.AddField(efb);
             }
