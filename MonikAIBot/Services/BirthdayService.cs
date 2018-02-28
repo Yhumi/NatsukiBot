@@ -121,10 +121,5 @@ namespace MonikAIBot.Services
 
             return userBirthdays;
         }
-
-        private ISocketMessageChannel GetServerBirthdayChannel()
-        {
-
-        }
     }
 }
