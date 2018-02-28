@@ -143,5 +143,77 @@ namespace MonikAIBot.Modules
 
             await Context.Channel.SendSuccessAsync($"Set {user.Username} to be {ex}.");
         }
+
+        [Command("Say"), Summary("Makes the bot say shit")]
+        [OwnerOnly]
+        public async Task Say(IMessageChannel ch, [Remainder] string content)
+        {
+            await ch.SendMessageAsync(content);
+        }
+
+        [Command("Say"), Summary("Makes the bot say shit")]
+        [OwnerOnly]
+        public async Task Say(IUser u, [Remainder] string content)
+        {
+            await u.SendMessageAsync(content);
+        }
+
+        [Command("Say"), Summary("Makes the bot say shit")]
+        [OwnerOnly]
+        public async Task Say(string location, [Remainder] string content)
+        {
+            string loc = String.Empty;
+            if (location.StartsWith("c") || location.StartsWith("C"))
+            {
+                location = location.Substring(1);
+                ulong channelID;
+                if (!UInt64.TryParse(location, out channelID))
+                {
+                    await Context.Channel.SendErrorAsync("Invalid channel");
+                    return;
+                }
+
+                IMessageChannel channel = (IMessageChannel)await Context.Client.GetChannelAsync(channelID);
+                await channel.SendMessageAsync(content);
+
+                loc = channel.Name;
+            }
+
+            if (location.StartsWith("u") || location.StartsWith("U"))
+            {
+                location = location.Substring(1);
+                ulong userID;
+                if (!UInt64.TryParse(location, out userID))
+                {
+                    await Context.Channel.SendErrorAsync("Invalid channel");
+                    return;
+                }
+
+                IUser User = await Context.Client.GetUserAsync(userID);
+                IDMChannel iDMChannel = await User.GetOrCreateDMChannelAsync();
+                await iDMChannel.SendMessageAsync(content);
+
+                loc = User.Username + "#" + User.Discriminator;
+            }
+
+            if (location.StartsWith("g") || location.StartsWith("G"))
+            {
+                location = location.Substring(1);
+                ulong serverID;
+                if (!UInt64.TryParse(location, out serverID))
+                {
+                    await Context.Channel.SendErrorAsync("Invalid channel");
+                    return;
+                }
+
+                IGuild Guild = await Context.Client.GetGuildAsync(serverID);
+                IMessageChannel channel = await Guild.GetDefaultChannelAsync();
+                await channel.SendMessageAsync(content);
+
+                loc = Guild.Name + "/" + channel.Name;
+            }
+
+            await Context.Channel.SendSuccessAsync($"Message sent to {loc}");
+        }
     }
 }
