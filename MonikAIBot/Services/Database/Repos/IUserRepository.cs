@@ -11,5 +11,7 @@ namespace MonikAIBot.Services.Database.Repos
         int GetBotUserID(ulong UserDiscordID);
         bool GetExemptionStatus(ulong UserDiscordID);
         void SetExemption(ulong UserDiscordID, bool Exemption);
+        List<User> GetAllBirthdays(DateTime date);
+        void SetUserBirthday(ulong id, DateTime date);
     }
 }

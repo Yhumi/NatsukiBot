@@ -27,6 +27,8 @@ namespace MonikAIBot
         private MonikAIBotLogger _logger = new MonikAIBotLogger();
         private Random _random;
 
+        private BirthdayService birthdayService = new BirthdayService();
+
         private Program()
         {
             _client = new DiscordSocketClient(new DiscordSocketConfig
@@ -58,6 +60,13 @@ namespace MonikAIBot
 
             provider.GetRequiredService<CommandHandler>();
             provider.GetRequiredService<ImageRateLimitHandler>();
+
+            //Start birthdays
+            int hours = 9;
+            var dateNow = DateTime.Now;
+            var date = new DateTime(dateNow.Year, dateNow.Month, dateNow.Day, hours, 0, 0);
+
+            birthdayService.StartBirthdays(date, _client, _config, _random);
 
             await Task.Delay(-1);
         }

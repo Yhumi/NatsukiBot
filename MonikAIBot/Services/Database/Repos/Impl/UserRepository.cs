@@ -51,5 +51,26 @@ namespace MonikAIBot.Services.Database.Repos.Impl
             _set.Update(u);
             _context.SaveChanges();
         }
+
+        public List<User> GetAllBirthdays(DateTime date)
+        {
+            try
+            {
+                return _set.Where(x => x.DateOfBirth.Day == date.Day && x.DateOfBirth.Month == date.Month).ToList();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public void SetUserBirthday(ulong id, DateTime date)
+        {
+            User uTUpdate = GetOrCreateUser(id);
+            uTUpdate.DateOfBirth = date;
+
+            _set.Update(uTUpdate);
+            _context.SaveChanges();
+        }
     }
 }

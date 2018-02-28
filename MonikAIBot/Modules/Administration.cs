@@ -6,6 +6,7 @@ using MonikAIBot.Services;
 using MonikAIBot.Services.Database.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -214,6 +215,56 @@ namespace MonikAIBot.Modules
             }
 
             await Context.Channel.SendSuccessAsync($"Message sent to {loc}");
+        }
+
+        [Command("SetUserBirthday"), Summary("Adds a user's birthday.")]
+        [Alias("SetBday", "Birthday", "SetDOB")]
+        [RequireUserPermission(GuildPermission.ManageMessages)]
+        public async Task AddUserBirthday(IGuildUser user, string birthday)
+        {
+            DateTime dt;
+            if (!DateTime.TryParseExact(birthday, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dt))
+            {
+                await Context.Channel.SendErrorAsync("That is not a valid date.");
+                return;
+
+                using (var uow = DBHandler.UnitOfWork())
+                {
+                    uow.User.SetUserBirthday(user.Id, dt);
+                }
+
+                await Context.Channel.SendSuccessAsync($"Added Birthday for {user.Username}.");
+            }
+        }
+
+        [Command("TestBirthdays"), Summary("Tests the birthdays")]
+        [RequireUserPermission(GuildPermission.ManageMessages)]
+        public async Task TestBirthdays()
+        {
+            List<User> todaysBirthdays = GetBirthdays();
+
+            if (todaysBirthdays != null)
+            {
+                foreach (User uBd in todaysBirthdays)
+                {
+                    IUser user = _client.GetUser(uBd.UserID);
+                    var age = DateTime.Today.Year - uBd.DateOfBirth.Year;
+                    await Context.Channel.SendSuccessAsync($"Testing Birthdays. {user.Username} is celebrating their birthday, they are {age}!");
+                }
+            }
+        }
+
+        private List<User> GetBirthdays()
+        {
+            var curDate = DateTime.Now;
+            List<User> userBirthdays;
+
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                userBirthdays = uow.User.GetAllBirthdays(curDate);
+            }
+
+            return userBirthdays;
         }
     }
 }

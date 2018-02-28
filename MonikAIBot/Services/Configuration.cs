@@ -9,5 +9,6 @@ namespace MonikAIBot.Services
         public string Token { get; set; }
         public string Prefix { get; set; }
         public ulong[] Owners { get; set; }
+        public ulong BirthdayChannel { get; set; }
     }
 }

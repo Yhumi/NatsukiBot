@@ -6,6 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Services\Database\Models\Server.cs" />
+    <Compile Remove="Services\Database\Repos\Impl\ServerRepository.cs" />
+    <Compile Remove="Services\Database\Repos\IServerRepository.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Discord.Net" Version="1.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="1.1.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="1.1.5" />
