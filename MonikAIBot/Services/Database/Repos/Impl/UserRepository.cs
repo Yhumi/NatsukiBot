@@ -94,7 +94,7 @@ namespace MonikAIBot.Services.Database.Repos.Impl
         public List<User> GetNine(int page = 0)
         {
             int offset = page * 9;
-            return _set.OrderBy(x => x.UserID).Skip(offset).Take(9).ToList();
+            return _set.Where(x => !x.DateOfBirth.Equals(DateTime.MinValue)).OrderBy(x => x.ID).Skip(offset).Take(9).ToList();
         }
     }
 }
