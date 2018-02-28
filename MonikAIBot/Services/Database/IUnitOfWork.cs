@@ -12,6 +12,7 @@ namespace MonikAIBot.Services.Database
         IUserRepository User { get; }
         IUserRateRepository UserRate { get; }
         IGuildRepository Guild { get; }
+        IGreetMessagesRepository GreetMessages { get; }
 
         int Complete();
         Task<int> CompleteAsync();

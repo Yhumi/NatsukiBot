@@ -367,5 +367,105 @@ namespace MonikAIBot.Modules
 
             await Context.Channel.SendSuccessAsync("Logging", $"State: {Status} | ChannelID: {G.DeleteLogChannel}");
         }
+
+        [Command("Greet")]
+        [OwnerOnly]
+        public async Task Greet(bool t)
+        {
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                uow.Guild.SetGuildGreetings(Context.Guild.Id, t);
+            }
+
+            string ret = "Turned off deletion logging for this server.";
+            if (t)
+                ret = "Turned on greetings for this server.";
+
+            await Context.Channel.SendSuccessAsync(ret);
+        }
+
+        [Command("SetGreetChannel")]
+        [Alias("SGRC")]
+        [OwnerOnly]
+        public async Task SetGreetChannel(IGuildChannel channel)
+        {
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                uow.Guild.SetGuildGreetChannel(Context.Guild.Id, channel.Id);
+            }
+
+            await Context.Channel.SendSuccessAsync($"Set guild's greeings channel to: {channel.Name}");
+        }
+
+        [Command("AddGreeting")]
+        [Alias("AGR")]
+        [OwnerOnly]
+        public async Task AddGreeting([Remainder] string message)
+        {
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                uow.GreetMessages.CreateGreatMessage(Context.Guild.Id, message);
+            }
+
+            await Context.Channel.SendSuccessAsync("Added greet message!");
+        }
+
+        [Command("DeleteGreeting")]
+        [Alias("DGR")]
+        [OwnerOnly]
+        public async Task DeleteGreeting([Remainder] string message)
+        {
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                uow.GreetMessages.DeleteGreetMessage(message, Context.Guild.Id);
+            }
+
+            await Context.Channel.SendSuccessAsync("Deleted greet message!");
+        }
+
+        [Command("DeleteGreeting")]
+        [Alias("DGR")]
+        [OwnerOnly]
+        public async Task DeleteGreeting(int ID)
+        {
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                uow.GreetMessages.DeleteGreetMessage(ID);
+            }
+
+            await Context.Channel.SendSuccessAsync("Deleted greet message!");
+        }
+
+        [Command("ShowGreetings")]
+        [Alias("SG")]
+        [OwnerOnly]
+        public async Task ShowGreetings(int page = 0)
+        {
+            if (page != 0)
+                page -= 1;
+
+            List<GreetMessages> GMs;
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                GMs = uow.GreetMessages.FetchGreetMessages(Context.Guild.Id, page);
+            }
+
+            if (!GMs.Any())
+            {
+                await Context.Channel.SendErrorAsync($"No GMs found for page {page + 1}");
+                return;
+            }
+
+            EmbedBuilder embed = new EmbedBuilder().WithOkColour().WithTitle($"GMs").WithFooter(efb => efb.WithText($"Page: {page + 1}"));
+
+            foreach (GreetMessages gm in GMs)
+            {
+                EmbedFieldBuilder efb = new EmbedFieldBuilder().WithName(gm.ID.ToString()).WithValue(gm.Message);
+
+                embed.AddField(efb);
+            }
+
+            await Context.Channel.BlankEmbedAsync(embed);
+        }
     }
 }

@@ -33,7 +33,9 @@ namespace MonikAIBot.Services.Database.Repos.Impl
                 {
                     GuildID = GuildID,
                     DeleteLogChannel = DelChannelID,
-                    DeleteLogEnabled = enabled
+                    DeleteLogEnabled = enabled,
+                    GreetMessageChannel = 0,
+                    GreetMessageEnabled = false
                 });
                 _context.SaveChanges();
             }
@@ -54,6 +56,30 @@ namespace MonikAIBot.Services.Database.Repos.Impl
 
             _set.Update(G);
             _context.SaveChanges();
+        }
+
+        public void SetGuildGreetChannel(ulong GuildID, ulong ChannelID)
+        {
+            Guild G = GetOrCreateGuild(GuildID);
+            G.GreetMessageChannel = ChannelID;
+
+            _set.Update(G);
+            _context.SaveChanges();
+        }
+
+        public void SetGuildGreetings(ulong GuildID, bool isEnabled)
+        {
+            Guild G = GetOrCreateGuild(GuildID);
+            G.GreetMessageEnabled = isEnabled;
+
+            _set.Update(G);
+            _context.SaveChanges();
+        }
+
+        public bool IsGreeting(ulong GuildID)
+        {
+            Guild G = GetOrCreateGuild(GuildID);
+            return G.GreetMessageEnabled;
         }
     }
 }

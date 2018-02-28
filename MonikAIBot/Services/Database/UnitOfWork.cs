@@ -23,6 +23,9 @@ namespace MonikAIBot.Services.Database
         private IGuildRepository _guild;
         public IGuildRepository Guild => _guild ?? (_guild = new GuildRepository(_context));
 
+        private IGreetMessagesRepository _greetMessages;
+        public IGreetMessagesRepository GreetMessages => _greetMessages ?? (_greetMessages = new GreetMessagesRepository(_context));
+
         public UnitOfWork(DBContext context)
         {
             _context = context;

@@ -26,8 +26,31 @@ namespace MonikAIBot.Services
             _commands = commands;
             _provider = provider;
             _logger = logger;
-
+            
             _discord.MessageDeleted += DeletedAsync;
+            _discord.UserJoined += UserJoinedAsync;
+        }
+
+        private async Task UserJoinedAsync(SocketGuildUser user)
+        {
+            var GuildUser = (IGuildUser)user;
+            if (user.Guild == null) return;
+
+            GreetMessages GM = null;
+            ulong ChannelID = 0;
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                if (!uow.Guild.IsGreeting(GuildUser.Guild.Id)) return;
+                GM = uow.GreetMessages.GetRandomGreetMessage(GuildUser.Guild.Id);
+                ChannelID = uow.Guild.GetOrCreateGuild(GuildUser.Guild.Id).GreetMessageChannel;
+            }
+
+            if (GM == null || ChannelID == 0) return;
+
+            var ChannelToSend = (IMessageChannel)_discord.GetChannel(ChannelID);
+
+            string message = GM.Message.Replace("{user}", GuildUser.Username);
+            await ChannelToSend.SendMessageAsync(message);
         }
 
         private async Task DeletedAsync(Cacheable<IMessage, ulong> CacheableMessage, ISocketMessageChannel origChannel)

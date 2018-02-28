@@ -21,6 +21,7 @@ namespace MonikAIBot.Services.Database
         public DbSet<User> User { get; set; }
         public DbSet<UserRate> UserRate { get; set; }
         public DbSet<Guild> Guild { get; set; }
+        public DbSet<GreetMessages> GreetMessages { get; set; }
 
         public DBContext() : base()
         {
@@ -57,6 +58,13 @@ namespace MonikAIBot.Services.Database
             var guildEntity = modelBuilder.Entity<Guild>();
             guildEntity
                 .HasIndex(d => d.GuildID)
+                .IsUnique();
+            #endregion
+
+            #region GreetMessages
+            var greetMessagesEntity = modelBuilder.Entity<GreetMessages>();
+            greetMessagesEntity
+                .HasIndex(d => d.ServerID)
                 .IsUnique();
             #endregion
         }

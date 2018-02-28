@@ -1,6 +1,7 @@
 ﻿using Discord;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,6 +9,13 @@ namespace MonikAIBot.Services
 {
     public static class Extensions
     {
+        private static Random _random = new Random();
+
+        public static T RandomItem<T>(this IEnumerable<T> list)
+        {
+            return list.ElementAt(_random.Next(0, list.Count()));
+        }
+
         public static Task<IUserMessage> SendErrorAsync(this IMessageChannel ch, string title, string text, string url = null, string footer = null)
         {
             var eb = new EmbedBuilder().WithErrorColour().WithDescription(text).WithTitle(title);

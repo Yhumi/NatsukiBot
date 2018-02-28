@@ -9,5 +9,7 @@ namespace MonikAIBot.Services.Database.Models
         public ulong GuildID { get; set; }
         public ulong DeleteLogChannel { get; set; }
         public bool DeleteLogEnabled { get; set; }
+        public ulong GreetMessageChannel { get; set; }
+        public bool GreetMessageEnabled { get; set; }
     }
 }
