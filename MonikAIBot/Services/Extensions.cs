@@ -55,16 +55,10 @@ namespace MonikAIBot.Services
             => ch.SendMessageAsync("", embed: new EmbedBuilder().WithOkColour().WithDescription(text).Build());
 
         public static EmbedBuilder WithOkColour(this EmbedBuilder eb)
-            => eb.WithColor(3800852);
+            => eb.WithColor(16729080);
 
         public static EmbedBuilder WithErrorColour(this EmbedBuilder eb)
             => eb.WithColor(16711731);
-
-        public static EmbedBuilder WithQuoteColour(this EmbedBuilder eb)
-            => eb.WithColor(16758465);
-
-        public static EmbedBuilder WithDnDColour(this EmbedBuilder eb)
-            => eb.WithColor(2003199);
 
         public static IMessage DeleteAfter(this IUserMessage msg, int seconds)
         {

@@ -303,7 +303,7 @@ namespace MonikAIBot.Modules
                 return;
             }
 
-            EmbedBuilder embed = new EmbedBuilder().WithQuoteColour().WithTitle($"Birthdays").WithFooter(efb => efb.WithText($"Page: {page + 1} | FormatString: {f}"));
+            EmbedBuilder embed = new EmbedBuilder().WithOkColour().WithTitle($"Birthdays").WithFooter(efb => efb.WithText($"Page: {page + 1} | FormatString: {f}"));
 
             foreach (User u in Users)
             {
