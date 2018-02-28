@@ -8,6 +8,6 @@ namespace MonikAIBot.Services.Database.Models
     {
         public ulong UserID { get; set; }
         public bool IsExempt { get; set; }
-        public DateTime? DateOfBirth { get; set; }
+        public DateTime DateOfBirth { get; set; }
     }
 }
