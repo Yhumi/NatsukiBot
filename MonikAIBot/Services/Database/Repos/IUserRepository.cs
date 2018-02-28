@@ -13,5 +13,6 @@ namespace MonikAIBot.Services.Database.Repos
         void SetExemption(ulong UserDiscordID, bool Exemption);
         List<User> GetAllBirthdays(DateTime date);
         void SetUserBirthday(ulong id, DateTime date);
+        void SetupAllBirthdays();
     }
 }

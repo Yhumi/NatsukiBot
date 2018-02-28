@@ -249,9 +249,24 @@ namespace MonikAIBot.Modules
                 {
                     IUser user = _client.GetUser(uBd.UserID);
                     var age = DateTime.Today.Year - uBd.DateOfBirth.Year;
-                    await Context.Channel.SendSuccessAsync($"Testing Birthdays. {user.Username} is celebrating their birthday, they are {age}!");
+                    await Context.Channel.SendMessageAsync($"Testing Birthdays. {user.Username} is celebrating their birthday, they are {age}!");
                 }
             }
+        }
+
+        [Command("MinValAllBDays")]
+        [OwnerOnly]
+        public async Task MinValAllBDays([Remainder] string s)
+        {
+            //Just to stop somehow activating the command by mistake
+            if (s != "validation") return;
+
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                uow.User.SetupAllBirthdays();
+            }
+
+            await Context.Channel.SendSuccessAsync($"Done.");
         }
 
         private List<User> GetBirthdays()

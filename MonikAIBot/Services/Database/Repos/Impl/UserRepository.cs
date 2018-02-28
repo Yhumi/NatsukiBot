@@ -13,7 +13,7 @@ namespace MonikAIBot.Services.Database.Repos.Impl
         {
         }
 
-        public User GetOrCreateUser(ulong UserID, bool Exemption = false)
+        public User GetOrCreateUser(ulong UserID, bool Exemption = false, DateTime dt = DateTime.MinValue)
         {
             User toReturn;
             toReturn = _set.FirstOrDefault(x => x.UserID == UserID);
@@ -23,7 +23,8 @@ namespace MonikAIBot.Services.Database.Repos.Impl
                 _set.Add(toReturn = new User()
                 {
                     UserID = UserID,
-                    IsExempt = Exemption
+                    IsExempt = Exemption,
+                    DateOfBirth = dt
                 });
                 _context.SaveChanges();
             }
@@ -56,7 +57,7 @@ namespace MonikAIBot.Services.Database.Repos.Impl
         {
             try
             {
-                return _set.Where(x => x.DateOfBirth.Day == date.Day && x.DateOfBirth.Month == date.Month).ToList();
+                return _set.Where(x => x.DateOfBirth.Day == date.Day && x.DateOfBirth.Month == date.Month && !x.DateOfBirth.Equals(DateTime.MinValue)).ToList();
             }
             catch (Exception)
             {
@@ -70,6 +71,20 @@ namespace MonikAIBot.Services.Database.Repos.Impl
             uTUpdate.DateOfBirth = date;
 
             _set.Update(uTUpdate);
+            _context.SaveChanges();
+        }
+
+        public void SetupAllBirthdays()
+        {
+            List<User> users = _set.ToList();
+            List<User> update = new List<User>();
+            foreach (User u in users)
+            {
+                u.DateOfBirth = DateTime.MinValue;
+                update.Add(u);
+            }
+
+            _set.UpdateRange(update);
             _context.SaveChanges();
         }
     }
