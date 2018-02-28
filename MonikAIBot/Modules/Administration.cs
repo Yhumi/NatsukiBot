@@ -7,6 +7,7 @@ using MonikAIBot.Services.Database.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -219,7 +220,7 @@ namespace MonikAIBot.Modules
 
         [Command("SetUserBirthday"), Summary("Adds a user's birthday.")]
         [Alias("SetBday", "Birthday", "SetDOB")]
-        [RequireUserPermission(GuildPermission.ManageMessages)]
+        [RequireUserPermission(GuildPermission.Administrator)]
         public async Task AddUserBirthday(IGuildUser user, string birthday)
         {
             DateTime dt;
@@ -238,7 +239,7 @@ namespace MonikAIBot.Modules
         }
 
         [Command("TestBirthdays"), Summary("Tests the birthdays")]
-        [RequireUserPermission(GuildPermission.ManageMessages)]
+        [RequireUserPermission(GuildPermission.Administrator)]
         public async Task TestBirthdays()
         {
             List<User> todaysBirthdays = GetBirthdays();
@@ -280,6 +281,39 @@ namespace MonikAIBot.Modules
             }
 
             return userBirthdays;
+        }
+
+        [Command("ShowBirthdays")]
+        [OwnerOnly]
+        public async Task ShowBirthdays(int page = 0)
+        {
+            if (page != 0)
+                page -= 1;
+
+            List<User> Users;
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                Users = uow.User.GetNine(page);
+            }
+
+            if (!Users.Any())
+            {
+                await Context.Channel.SendErrorAsync($"No users found for page {page + 1}");
+                return;
+            }
+
+            EmbedBuilder embed = new EmbedBuilder().WithQuoteColour().WithTitle("Birthdays").WithFooter(efb => efb.WithText($"Page: {page + 1}"));
+
+            foreach (User u in Users)
+            {
+                IGuildUser user = await Context.Guild.GetUserAsync(u.UserID);
+                string username = user?.Username ?? u.UserID.ToString();
+                EmbedFieldBuilder efb = new EmbedFieldBuilder().WithName(username).WithValue(u.DateOfBirth.ToString(@"dd'/'MM'/'yyyy")).WithIsInline(true);
+
+                embed.AddField(efb);
+            }
+
+            await Context.Channel.BlankEmbedAsync(embed);
         }
     }
 }

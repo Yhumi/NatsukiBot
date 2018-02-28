@@ -14,5 +14,6 @@ namespace MonikAIBot.Services.Database.Repos
         List<User> GetAllBirthdays(DateTime date);
         void SetUserBirthday(ulong id, DateTime date);
         void SetupAllBirthdays();
+        List<User> GetNine(int page = 0);
     }
 }

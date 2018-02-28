@@ -90,5 +90,11 @@ namespace MonikAIBot.Services.Database.Repos.Impl
             _set.UpdateRange(update);
             _context.SaveChanges();
         }
+
+        public List<User> GetNine(int page = 0)
+        {
+            int offset = page * 9;
+            return _set.OrderBy(x => x.UserID).Skip(offset).Take(9).ToList();
+        }
     }
 }
