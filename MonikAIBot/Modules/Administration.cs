@@ -284,6 +284,7 @@ namespace MonikAIBot.Modules
         }
 
         [Command("ShowBirthdays")]
+        [Alias("SBD")]
         [OwnerOnly]
         public async Task ShowBirthdays(int page = 0, [Remainder] string f = @"dd'/'MM'/'yyyy")
         {
@@ -302,7 +303,7 @@ namespace MonikAIBot.Modules
                 return;
             }
 
-            EmbedBuilder embed = new EmbedBuilder().WithQuoteColour().WithTitle($"Birthdays | Format: {f}").WithFooter(efb => efb.WithText($"Page: {page + 1}"));
+            EmbedBuilder embed = new EmbedBuilder().WithQuoteColour().WithTitle($"Birthdays").WithFooter(efb => efb.WithText($"Page: {page + 1} | FormatString: {f}"));
 
             foreach (User u in Users)
             {
