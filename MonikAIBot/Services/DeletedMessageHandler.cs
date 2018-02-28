@@ -51,9 +51,13 @@ namespace MonikAIBot.Services
 
             var ChannelToSend = (IMessageChannel) _discord.GetChannel(G.DeleteLogChannel);
 
+            string content = CachedMessage.Content;
+            if (content == "") content = "*original message was blank*";
+
             EmbedBuilder embed = new EmbedBuilder().WithAuthor(eab => eab.WithIconUrl(CachedMessage.Author.GetAvatarUrl()).WithName(CachedMessage.Author.Username)).WithOkColour()
-                                                    .AddField(efb => efb.WithName("Channel").WithValue("#" + origChannel.Name))
-                                                    .AddField(efb => efb.WithName("Message").WithValue(CachedMessage.Content));
+                                                    .AddField(efb => efb.WithName("Channel").WithValue("#" + origChannel.Name).WithIsInline(true))
+                                                    .AddField(efb => efb.WithName("MessageID").WithValue(CachedMessage.Id).WithIsInline(true))
+                                                    .AddField(efb => efb.WithName("Message").WithValue(content));
 
             string footerText = "Created: " + CachedMessage.CreatedAt.ToString();
 
@@ -62,6 +66,13 @@ namespace MonikAIBot.Services
             EmbedFooterBuilder footer = new EmbedFooterBuilder().WithText(footerText);
 
             await ChannelToSend.BlankEmbedAsync(embed.WithFooter(footer));
+
+            if (CachedMessage.Attachments.Count == 0) return;
+
+            foreach(var attatchment in CachedMessage.Attachments)
+            {
+                await ChannelToSend.SendMessageAsync($"Message ID: {CachedMessage.Id} has attachment: {attatchment.Url}");
+            }
         }
     }
 }
