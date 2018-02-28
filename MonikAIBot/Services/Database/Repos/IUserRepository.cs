@@ -7,7 +7,7 @@ namespace MonikAIBot.Services.Database.Repos
 {
     public interface IUserRepository : IRepository<User>
     {
-        User GetOrCreateUser(ulong UserID, bool Expemption = false);
+        User GetOrCreateUser(ulong UserID, bool Expemption = false, DateTime? dt = null);
         int GetBotUserID(ulong UserDiscordID);
         bool GetExemptionStatus(ulong UserDiscordID);
         void SetExemption(ulong UserDiscordID, bool Exemption);

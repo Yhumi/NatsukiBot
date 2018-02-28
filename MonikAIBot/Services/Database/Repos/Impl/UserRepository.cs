@@ -13,8 +13,11 @@ namespace MonikAIBot.Services.Database.Repos.Impl
         {
         }
 
-        public User GetOrCreateUser(ulong UserID, bool Exemption = false, DateTime dt = DateTime.MinValue)
+        public User GetOrCreateUser(ulong UserID, bool Exemption = false, DateTime? dt = null)
         {
+            if (dt == null)
+                dt = DateTime.MinValue;
+
             User toReturn;
             toReturn = _set.FirstOrDefault(x => x.UserID == UserID);
 
@@ -24,7 +27,7 @@ namespace MonikAIBot.Services.Database.Repos.Impl
                 {
                     UserID = UserID,
                     IsExempt = Exemption,
-                    DateOfBirth = dt
+                    DateOfBirth = (DateTime)dt
                 });
                 _context.SaveChanges();
             }
