@@ -467,5 +467,44 @@ namespace MonikAIBot.Modules
 
             await Context.Channel.BlankEmbedAsync(embed);
         }
+
+        [Command("AddBL")]
+        [Alias("ABL")]
+        [OwnerOnly]
+        public async Task AddBL([Remainder] string s)
+        {
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                uow.BlockedLogs.AddBlockedLog(Context.Guild.Id, s);
+            }
+
+            await Context.Channel.SendSuccessAsync("Added blocked log filter!");
+        }
+
+        [Command("DeleteBL")]
+        [Alias("DBL")]
+        [OwnerOnly]
+        public async Task DeleteBL([Remainder] string message)
+        {
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                uow.BlockedLogs.DeleteBlockedLog(Context.Guild.Id, message);
+            }
+
+            await Context.Channel.SendSuccessAsync("Deleted blocked log filter!");
+        }
+
+        [Command("DeleteBL")]
+        [Alias("DBL")]
+        [OwnerOnly]
+        public async Task DeleteBL(int ID)
+        {
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                uow.BlockedLogs.DeleteBlockedLog(ID);
+            }
+
+            await Context.Channel.SendSuccessAsync("Deleted blocked log filter!");
+        }
     }
 }

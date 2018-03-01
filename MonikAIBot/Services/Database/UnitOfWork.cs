@@ -26,6 +26,9 @@ namespace MonikAIBot.Services.Database
         private IGreetMessagesRepository _greetMessages;
         public IGreetMessagesRepository GreetMessages => _greetMessages ?? (_greetMessages = new GreetMessagesRepository(_context));
 
+        private IBlockedLogsRepository _blockedLogs;
+        public IBlockedLogsRepository BlockedLogs => _blockedLogs ?? (_blockedLogs = new BlockedLogsRepository(_context));
+
         public UnitOfWork(DBContext context)
         {
             _context = context;

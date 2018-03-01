@@ -4,6 +4,7 @@ using Discord.WebSocket;
 using MonikAIBot.Services.Database.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -63,11 +64,18 @@ namespace MonikAIBot.Services
             if (CachedMessage == null) return;
 
             Guild G = null;
+            List<BlockedLogs> BLs = new List<BlockedLogs>();
             using (var uow = DBHandler.UnitOfWork())
             {
                 if (!uow.Guild.IsDeleteLoggingEnabled(MessageChannel.Guild.Id)) return;
                 G = uow.Guild.GetOrCreateGuild(MessageChannel.Guild.Id);
                 if (G.GuildID == 0) return;
+                BLs = uow.BlockedLogs.GetServerBlockedLogs(MessageChannel.Guild.Id);
+            }
+
+            if (BLs != null && BLs.Count > 0)
+            {
+                if (BLs.Any(x => CachedMessage.Content.StartsWith(x.BlockedString))) return;
             }
 
             if (G == null) return;

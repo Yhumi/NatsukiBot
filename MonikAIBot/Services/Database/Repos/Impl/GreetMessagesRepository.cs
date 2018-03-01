@@ -31,7 +31,7 @@ namespace MonikAIBot.Services.Database.Repos.Impl
 
         public void DeleteGreetMessage(string message, ulong serverID)
         {
-            GreetMessages GM = _set.Where(x => x.Message == message && x.ServerID == serverID).FirstOrDefault();
+            GreetMessages GM = _set.Where(x => x.Message.ToLower() == message.ToLower() && x.ServerID == serverID).FirstOrDefault();
             if (GM == null) return;
 
             _set.Remove(GM);
