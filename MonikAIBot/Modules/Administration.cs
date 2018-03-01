@@ -377,7 +377,7 @@ namespace MonikAIBot.Modules
                 uow.Guild.SetGuildGreetings(Context.Guild.Id, t);
             }
 
-            string ret = "Turned off deletion logging for this server.";
+            string ret = "Turned off greetings for this server.";
             if (t)
                 ret = "Turned on greetings for this server.";
 
