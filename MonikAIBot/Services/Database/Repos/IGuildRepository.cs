@@ -14,5 +14,7 @@ namespace MonikAIBot.Services.Database.Repos
         void SetGuildDelLogEnabled(ulong GuildID, bool isEnabled);
         void SetGuildGreetChannel(ulong GuildID, ulong ChannelID);
         void SetGuildGreetings(ulong GuildID, bool isEnabled);
+        void SetVCNotifyChannel(ulong GuildID, ulong ChannelID);
+        void SetVCNotifyEnabled(ulong GuildID, bool isEnabled);
     }
 }

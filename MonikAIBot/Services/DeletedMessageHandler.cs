@@ -30,6 +30,52 @@ namespace MonikAIBot.Services
             
             _discord.MessageDeleted += DeletedAsync;
             _discord.UserJoined += UserJoinedAsync;
+            _discord.UserVoiceStateUpdated += UserVoiceStateAsync;
+        }
+
+        private async Task UserVoiceStateAsync(SocketUser arg1, SocketVoiceState arg2, SocketVoiceState arg3)
+        {
+            ulong ServerID;
+            string ChannelName = "";
+            bool joined = false;
+            if (arg3.VoiceChannel == null)
+            {
+                //They're no longer connected;
+                ServerID = arg2.VoiceChannel.Guild.Id;
+                ChannelName = arg2.VoiceChannel.Name;
+            }
+            else if (arg2.VoiceChannel == null)
+            {
+                //They weren't connected but now are
+                ServerID = arg3.VoiceChannel.Guild.Id;
+                ChannelName = arg3.VoiceChannel.Name;
+                joined = true;
+            }
+            else
+            {
+                //Both weren't null, no need to do stuff as this means they just jumped VCs in the server
+                return;
+            }
+
+            Guild G = null;
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                //Lets get that guild
+                G = uow.Guild.GetOrCreateGuild(ServerID);
+            }
+
+            if (!G.VCNotifyEnable) return;
+            if (G.VCNotifyChannel == 0) return;
+
+            var channelToSend = (IMessageChannel)_discord.GetChannel(G.VCNotifyChannel);
+
+            if (joined)
+            {
+                await channelToSend.SendMessageAsync($"📣 {arg1.Username} has joined VC ({ChannelName}).");
+                return;
+            }
+
+            await channelToSend.SendMessageAsync($"📣 {arg1.Username} has left VC.");
         }
 
         private async Task UserJoinedAsync(SocketGuildUser user)

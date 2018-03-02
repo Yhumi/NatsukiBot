@@ -11,5 +11,7 @@ namespace MonikAIBot.Services.Database.Models
         public bool DeleteLogEnabled { get; set; }
         public ulong GreetMessageChannel { get; set; }
         public bool GreetMessageEnabled { get; set; }
+        public ulong VCNotifyChannel { get; set; }
+        public bool VCNotifyEnable { get; set; }
     }
 }

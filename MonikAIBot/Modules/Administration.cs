@@ -506,5 +506,35 @@ namespace MonikAIBot.Modules
 
             await Context.Channel.SendSuccessAsync("Deleted blocked log filter!");
         }
+
+        [Command("VCNotify")]
+        [Alias("VCN")]
+        [OwnerOnly]
+        public async Task VCNotify(bool t)
+        {
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                uow.Guild.SetVCNotifyEnabled(Context.Guild.Id, t);
+            }
+
+            string ret = "Turned off VC notification for this server.";
+            if (t)
+                ret = "Turned on VC notification for this server.";
+
+            await Context.Channel.SendSuccessAsync(ret);
+        }
+
+        [Command("SetVCNotifyChannel")]
+        [Alias("SVCNC")]
+        [OwnerOnly]
+        public async Task SetVCNotifyChannel(IGuildChannel channel)
+        {
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                uow.Guild.SetVCNotifyChannel(Context.Guild.Id, channel.Id);
+            }
+
+            await Context.Channel.SendSuccessAsync($"Set guild's VC Notify channel to: {channel.Name}");
+        }
     }
 }
