@@ -71,11 +71,11 @@ namespace MonikAIBot.Services
 
             if (joined)
             {
-                await channelToSend.SendMessageAsync($"📣 {arg1.Username} has joined VC ({ChannelName}).");
+                await channelToSend.SendMessageAsync($"📣 {arg1.Mention} has joined VC ({ChannelName}).");
                 return;
             }
 
-            await channelToSend.SendMessageAsync($"📣 {arg1.Username} has left VC.");
+            await channelToSend.SendMessageAsync($"📣 {arg1.Mention} has left VC.");
         }
 
         private async Task UserJoinedAsync(SocketGuildUser user)
