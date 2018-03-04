@@ -96,7 +96,7 @@ namespace MonikAIBot.Services
 
             if (AB != null)
             {
-                await _discord.GetGuild(GuildUser.GuildId).AddBanAsync(user);
+                await _discord.GetGuild(GuildUser.GuildId).AddBanAsync(user, reason: "Autobanned by Natsuki.");
                 return;
             }
 

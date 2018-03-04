@@ -557,7 +557,7 @@ namespace MonikAIBot.Modules
         }
 
         [Command("RemoveAutoBan")]
-        [Alias("RRB")]
+        [Alias("RAB")]
         [OwnerOnly]
         public async Task RemoveAutoBan(ulong ID)
         {
@@ -566,7 +566,7 @@ namespace MonikAIBot.Modules
                 uow.AutoBan.DeleteAutoBan(ID);
             }
 
-            await Context.Channel.SendSuccessAsync($"Added ID to AutoBan List: {ID}");
+            await Context.Channel.SendSuccessAsync($"Removed ID from AutoBan List: {ID}");
         }
     }
 }
