@@ -142,6 +142,7 @@ namespace MonikAIBot.Services
             EmbedBuilder embed = new EmbedBuilder().WithAuthor(eab => eab.WithIconUrl(CachedMessage.Author.GetAvatarUrl()).WithName(CachedMessage.Author.Username)).WithOkColour()
                                                     .AddField(efb => efb.WithName("Channel").WithValue("#" + origChannel.Name).WithIsInline(true))
                                                     .AddField(efb => efb.WithName("MessageID").WithValue(CachedMessage.Id).WithIsInline(true))
+                                                    .AddField(efb => efb.WithName("UserID").WithValue(CachedMessage.Author.Id).WithIsInline(true))
                                                     .AddField(efb => efb.WithName("Message").WithValue(content));
 
             string footerText = "Created: " + CachedMessage.CreatedAt.ToString();
