@@ -29,6 +29,9 @@ namespace MonikAIBot.Services.Database
         private IBlockedLogsRepository _blockedLogs;
         public IBlockedLogsRepository BlockedLogs => _blockedLogs ?? (_blockedLogs = new BlockedLogsRepository(_context));
 
+        private IAutoBanRepository _autoBan;
+        public IAutoBanRepository AutoBan => _autoBan ?? (_autoBan = new AutoBanRepository(_context));
+
         public UnitOfWork(DBContext context)
         {
             _context = context;

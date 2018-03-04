@@ -84,12 +84,20 @@ namespace MonikAIBot.Services
             if (user.Guild == null) return;
 
             GreetMessages GM = null;
+            AutoBan AB = null;
             ulong ChannelID = 0;
             using (var uow = DBHandler.UnitOfWork())
             {
                 if (!uow.Guild.IsGreeting(GuildUser.Guild.Id)) return;
                 GM = uow.GreetMessages.GetRandomGreetMessage(GuildUser.Guild.Id);
                 ChannelID = uow.Guild.GetOrCreateGuild(GuildUser.Guild.Id).GreetMessageChannel;
+                AB = uow.AutoBan.GetAutoBan(GuildUser.Id);
+            }
+
+            if (AB != null)
+            {
+                await _discord.GetGuild(GuildUser.GuildId).AddBanAsync(user);
+                return;
             }
 
             if (GM == null || ChannelID == 0) return;

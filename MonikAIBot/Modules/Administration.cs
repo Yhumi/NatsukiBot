@@ -19,6 +19,12 @@ namespace MonikAIBot.Modules
         private readonly TimeSpan defaultNull = TimeSpan.FromSeconds(1);
         private readonly DiscordSocketClient _client;
         private readonly Random _random;
+        private List<string> PatGifs = new List<string>()
+        {
+            "https://i.imgur.com/LRDanyb.gif",
+            "https://media.giphy.com/media/109ltuoSQT212w/giphy.gif",
+            "https://media.giphy.com/media/ARSp9T7wwxNcs/giphy.gif"
+        };
 
         public Administration(Random random, DiscordSocketClient client)
         {
@@ -535,6 +541,32 @@ namespace MonikAIBot.Modules
             }
 
             await Context.Channel.SendSuccessAsync($"Set guild's VC Notify channel to: {channel.Name}");
+        }
+
+        [Command("AddAutoBan")]
+        [Alias("AAB")]
+        [OwnerOnly]
+        public async Task AddAutoBan(ulong ID)
+        {
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                uow.AutoBan.AddAutoBan(ID);
+            }
+
+            await Context.Channel.SendSuccessAsync($"Added ID to AutoBan List: {ID}");
+        }
+
+        [Command("RemoveAutoBan")]
+        [Alias("RRB")]
+        [OwnerOnly]
+        public async Task RemoveAutoBan(ulong ID)
+        {
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                uow.AutoBan.DeleteAutoBan(ID);
+            }
+
+            await Context.Channel.SendSuccessAsync($"Added ID to AutoBan List: {ID}");
         }
     }
 }

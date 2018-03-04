@@ -14,6 +14,7 @@ namespace MonikAIBot.Services.Database
         IGuildRepository Guild { get; }
         IGreetMessagesRepository GreetMessages { get; }
         IBlockedLogsRepository BlockedLogs { get; }
+        IAutoBanRepository AutoBan { get; }
 
         int Complete();
         Task<int> CompleteAsync();

@@ -23,6 +23,7 @@ namespace MonikAIBot.Services.Database
         public DbSet<Guild> Guild { get; set; }
         public DbSet<GreetMessages> GreetMessages { get; set; }
         public DbSet<BlockedLogs> BlockedLogs { get; set; }
+        public DbSet<AutoBan> AutoBan { get; set; }
 
         public DBContext() : base()
         {
@@ -73,6 +74,13 @@ namespace MonikAIBot.Services.Database
             var blockedLogsEntity = modelBuilder.Entity<BlockedLogs>();
             blockedLogsEntity
                 .HasIndex(d => d.ServerID)
+                .IsUnique();
+            #endregion
+
+            #region AutoBan
+            var autoBanEntity = modelBuilder.Entity<AutoBan>();
+            autoBanEntity
+                .HasIndex(d => d.UserID)
                 .IsUnique();
             #endregion
         }
