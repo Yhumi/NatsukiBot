@@ -19,11 +19,5 @@ namespace MonikAIBot.Modules
             _random = random;
             _logger = logger;
         }
-
-        [Command("test")]
-        public async Task test()
-        {
-            await Context.Channel.SendSuccessAsync("Saucy");
-        }
     }
 }
