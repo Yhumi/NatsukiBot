@@ -54,6 +54,9 @@ namespace MonikAIBot
             _random = new Random();
             _rcon = new RCON(IPAddress.Parse(_config.RconIP), _config.RconPort, _config.RCONPassword);
 
+            //Set ondisconnect
+            _rcon.OnDisconnected += OnDisconnected;
+
             //Command Setup
             await InitCommands();
 
@@ -76,6 +79,11 @@ namespace MonikAIBot
             birthdayService.StartBirthdays(date, _client, _config, _random);
 
             await Task.Delay(-1);
+        }
+
+        private void OnDisconnected()
+        {
+            _logger.Log("Automatically Disconnected", "Rcon");
         }
 
         private async Task InitCommands()
