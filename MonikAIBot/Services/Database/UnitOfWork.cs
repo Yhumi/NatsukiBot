@@ -32,6 +32,9 @@ namespace MonikAIBot.Services.Database
         private IAutoBanRepository _autoBan;
         public IAutoBanRepository AutoBan => _autoBan ?? (_autoBan = new AutoBanRepository(_context));
 
+        private IWaifusRepository _waifus;
+        public IWaifusRepository Waifus => _waifus ?? (_waifus = new WaifusRepository(_context));
+
         public UnitOfWork(DBContext context)
         {
             _context = context;

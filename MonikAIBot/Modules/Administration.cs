@@ -610,5 +610,17 @@ namespace MonikAIBot.Modules
                 await Context.Channel.SendSuccessAsync("Reset the Minecraft name for that dummy~");
             }
         }
+
+        [Command("AddWaifu")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task AddWaifu([Remainder] string waifu)
+        {
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                uow.Waifus.AddWaifu(waifu);
+            }
+
+            await Context.Channel.SendSuccessAsync($"Added waifu: {waifu}");
+        }
     }
 }
