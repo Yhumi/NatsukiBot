@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using CoreRCON;
+using Discord;
 using Discord.Commands;
 using Discord.Net;
 using Discord.WebSocket;
@@ -19,22 +20,18 @@ namespace MonikAIBot.Modules
         private readonly TimeSpan defaultNull = TimeSpan.FromSeconds(1);
         private readonly DiscordSocketClient _client;
         private readonly Random _random;
-        private List<string> PatGifs = new List<string>()
-        {
-            "https://i.imgur.com/LRDanyb.gif",
-            "https://media.giphy.com/media/109ltuoSQT212w/giphy.gif",
-            "https://media.giphy.com/media/ARSp9T7wwxNcs/giphy.gif"
-        };
+        private readonly RCON _rcon;
 
-        public Administration(Random random, DiscordSocketClient client)
+        public Administration(Random random, DiscordSocketClient client, RCON rcon)
         {
             _random = random;
             _client = client;
+            _rcon = rcon;
         }
 
         [Command("Shutdown"), Summary("Kills the bot")]
         [Alias("die")]
-        [RequireContext(ContextType.Guild)]
+        [RequireContext(ContextType.DM)]
         [OwnerOnly]
         public async Task Shutdown()
         {
@@ -567,6 +564,23 @@ namespace MonikAIBot.Modules
             }
 
             await Context.Channel.SendSuccessAsync($"Removed ID from AutoBan List: {ID}");
+        }
+
+        [Command("ExecuteMCRCON")]
+        [Alias("ExecuteRCON", "MC")]
+        [OwnerOnly]
+        public async Task ExecuteMCRCON([Remainder] string command)
+        {
+            try
+            {
+                await _rcon.ConnectAsync();
+                await _rcon.SendCommandAsync(command);
+                await Context.Channel.SendSuccessAsync($"Command \"{command}\" executed successfully.");
+            }
+            catch (Exception ex)
+            {
+                await Context.Channel.SendErrorAsync("Command failed.");
+            }
         }
     }
 }

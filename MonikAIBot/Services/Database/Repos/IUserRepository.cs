@@ -15,5 +15,7 @@ namespace MonikAIBot.Services.Database.Repos
         void SetUserBirthday(ulong id, DateTime date);
         void SetupAllBirthdays();
         List<User> GetNine(int page = 0);
+        void SetMinecraftUsername(ulong UserDiscordID, string name);
+        string GetMinecraftUsername(ulong UserDiscordID);
     }
 }

@@ -27,7 +27,8 @@ namespace MonikAIBot.Services.Database.Repos.Impl
                 {
                     UserID = UserID,
                     IsExempt = Exemption,
-                    DateOfBirth = (DateTime)dt
+                    DateOfBirth = (DateTime)dt,
+                    MinecraftUsername = "none"
                 });
                 _context.SaveChanges();
             }
@@ -95,6 +96,21 @@ namespace MonikAIBot.Services.Database.Repos.Impl
         {
             int offset = page * 9;
             return _set.Where(x => !x.DateOfBirth.Equals(DateTime.MinValue)).OrderBy(x => x.ID).Skip(offset).Take(9).ToList();
+        }
+
+        public void SetMinecraftUsername(ulong UserDiscordID, string name)
+        {
+            User uTUpdate = GetOrCreateUser(UserDiscordID);
+            uTUpdate.MinecraftUsername = name;
+
+            _set.Update(uTUpdate);
+            _context.SaveChanges();
+        }
+
+        public string GetMinecraftUsername(ulong UserDiscordID)
+        {
+            User u = GetOrCreateUser(UserDiscordID);
+            return u.MinecraftUsername;
         }
     }
 }

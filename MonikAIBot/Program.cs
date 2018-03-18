@@ -8,6 +8,9 @@ using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using CoreRCON;
+using CoreRCON.Parsers.Standard;
+using System.Net;
 
 //henlo world
 //messaging best admin, i am number 2 best
@@ -29,6 +32,8 @@ namespace MonikAIBot
 
         private BirthdayService birthdayService = new BirthdayService();
 
+        private RCON _rcon;
+
         private Program()
         {
             _client = new DiscordSocketClient(new DiscordSocketConfig
@@ -47,6 +52,7 @@ namespace MonikAIBot
         {
             _config = JsonConvert.DeserializeObject<Configuration>(File.ReadAllText(@"data/config.json"));
             _random = new Random();
+            _rcon = new RCON(IPAddress.Parse(_config.RconIP), _config.RconPort, _config.RCONPassword);
 
             //Command Setup
             await InitCommands();
@@ -78,9 +84,11 @@ namespace MonikAIBot
             _map.AddSingleton(_client);
             _map.AddSingleton(_logger);
             _map.AddSingleton(_random);
+            _map.AddSingleton(_rcon);
 
             //For each module do the following
             await _commands.AddModuleAsync<Administration>();
+            await _commands.AddModuleAsync<Interactions>();
 
             _map.AddSingleton(_commands);
             _map.AddSingleton<CommandHandler>();
