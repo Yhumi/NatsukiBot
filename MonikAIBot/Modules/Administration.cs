@@ -581,5 +581,34 @@ namespace MonikAIBot.Modules
                 await Context.Channel.SendErrorAsync("Command failed.");
             }
         }
+
+        [Command("ResetMinecraftName")]
+        [Alias("ResetMC")]
+        [OwnerOnly]
+        public async Task ResetMinecraftName(IGuildUser user)
+        {
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                string GetMCName = uow.User.GetMinecraftUsername(user.Id);
+                if (GetMCName == "none") return;
+
+                //Now unwhitelist that name
+                try
+                {
+                    await _rcon.ConnectAsync();
+                    await _rcon.SendCommandAsync($"whitelist remove {GetMCName}");
+                }
+                catch (Exception)
+                {
+                    return;
+                }
+
+                //Now set their MC name to none
+                uow.User.SetMinecraftUsername(user.Id, "none");
+
+                //Now we're done
+                await Context.Channel.SendSuccessAsync("Reset the Minecraft name for that dummy~");
+            }
+        }
     }
 }
