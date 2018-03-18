@@ -97,6 +97,39 @@ namespace MonikAIBot.Modules
             await Context.Channel.SendPictureAsync("Petting <3", $"{Context.User.Username} is petting {user.Username}! <3", $"https:{imageURL}");
         }
 
+        [Command("Kiss"), Summary("Kiss a given user")]
+        public async Task Kiss(IGuildUser user)
+        {
+            //Get page for image
+            int page = _random.Next(0, 2);
+
+            //Format the URL
+            string APIURLComplete = APIUrl.Replace("{tags}", "kiss+animated").Replace("{page}", page.ToString()).Replace("{limit}", limit.ToString());
+
+            //Response string
+            string response = await APIResponse(APIURLComplete);
+
+            //Now handle it, if it's null we return otherwise the task is awaited.
+            if (response == null) return;
+
+            string imageURL = null;
+
+            while (imageURL == null)
+            {
+                //If we're here we have a response stirng
+                XElement[] arr = XDocument.Parse(response).Descendants().ToArray();
+
+                //We can get one of these elements at random
+                XElement elm = arr.RandomItem();
+
+                //Now lets use that element's fileurl
+                imageURL = elm.Attributes().Where(x => x.Name.ToString().ToLower() == "file_url").FirstOrDefault()?.Value ?? null;
+            }
+
+            //We have the URL let us use it
+            await Context.Channel.SendPictureAsync("Kissing <3", $"{Context.User.Username} is giving {user.Username} a kiss! <3", $"https:{imageURL}");
+        }
+
         [Command("MCWhitelist"), Summary("Adds a user to the whitelist.")]
         [Alias("WhitelistMe", "MCWL")]
         public async Task MCWhitelist([Remainder] string username)
