@@ -31,7 +31,6 @@ namespace MonikAIBot.Modules
 
         [Command("Shutdown"), Summary("Kills the bot")]
         [Alias("die")]
-        [RequireContext(ContextType.DM)]
         [OwnerOnly]
         public async Task Shutdown()
         {
