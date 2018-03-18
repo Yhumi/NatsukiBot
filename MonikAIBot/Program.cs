@@ -97,6 +97,7 @@ namespace MonikAIBot
             //For each module do the following
             await _commands.AddModuleAsync<Administration>();
             await _commands.AddModuleAsync<Interactions>();
+            await _commands.AddModuleAsync<NSFW>();
 
             _map.AddSingleton(_commands);
             _map.AddSingleton<CommandHandler>();

@@ -10,6 +10,7 @@ namespace MonikAIBot.Services
         public string Prefix { get; set; }
         public ulong[] Owners { get; set; }
         public ulong BirthdayChannel { get; set; }
+        public ulong[] NSFWChannels { get; set; }
         public string RconIP { get; set; }
         public ushort RconPort { get; set; }
         public string RCONPassword { get; set; }

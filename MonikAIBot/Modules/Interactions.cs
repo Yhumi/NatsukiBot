@@ -21,7 +21,7 @@ namespace MonikAIBot.Modules
         private readonly RCON _rcon;
 
         //API Stuff
-        private readonly string APIUrl = "https://safebooru.org/index.php?page=dapi&s=post&q=index&tags={tags}&pid={page}&limit={limit}";
+        private readonly string APIUrl = "https://safebooru.org/index.php?page=dapi&s=post&q=index&tags={tags}&pid=0&limit={limit}";
         private int limit = 50;
 
         public Interactions(Random random, MonikAIBotLogger logger, RCON rcon)
@@ -69,11 +69,8 @@ namespace MonikAIBot.Modules
 
         private async Task<string> GetImageURL(string tags)
         {
-            //Get page for image
-            int page = _random.Next(0, 2);
-
             //Format the URL
-            string APIURLComplete = APIUrl.Replace("{tags}", tags).Replace("{page}", page.ToString()).Replace("{limit}", limit.ToString());
+            string APIURLComplete = APIUrl.Replace("{tags}", tags).Replace("{limit}", limit.ToString());
 
             //Response string
             string response = await APIResponse(APIURLComplete);
