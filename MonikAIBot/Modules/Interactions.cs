@@ -125,7 +125,7 @@ namespace MonikAIBot.Modules
                     //Tell them it worked
                     await Context.Channel.SendSuccessAsync("You are now whitelisted!");
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     await Context.Channel.SendErrorAsync("Error whitelisting you.");
                 }

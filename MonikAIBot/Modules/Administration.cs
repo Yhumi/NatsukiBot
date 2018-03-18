@@ -577,7 +577,7 @@ namespace MonikAIBot.Modules
                 await _rcon.SendCommandAsync(command);
                 await Context.Channel.SendSuccessAsync($"Command \"{command}\" executed successfully.");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 await Context.Channel.SendErrorAsync("Command failed.");
             }
