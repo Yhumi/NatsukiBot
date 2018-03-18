@@ -22,7 +22,7 @@ namespace MonikAIBot.Modules
 
         //API Stuff
         private readonly string APIUrl = "https://safebooru.org/index.php?page=dapi&s=post&q=index&tags={tags}&pid={page}&limit={limit}";
-        private int limit = 25;
+        private int limit = 50;
 
         public Interactions(Random random, MonikAIBotLogger logger, RCON rcon)
         {
