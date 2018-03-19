@@ -646,7 +646,7 @@ namespace MonikAIBot.Modules
 
             foreach (Waifus w in Ws)
             {
-                EmbedFieldBuilder efb = new EmbedFieldBuilder().WithValue(w.ID.ToString() + ". " + w.Waifu);
+                EmbedFieldBuilder efb = new EmbedFieldBuilder().WithName("").WithValue(w.ID.ToString() + ". " + w.Waifu);
 
                 embed.AddField(efb);
             }
