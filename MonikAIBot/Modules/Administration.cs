@@ -655,5 +655,33 @@ namespace MonikAIBot.Modules
 
             await Context.Channel.BlankEmbedAsync(embed);
         }
+
+        [Command("DeleteWaifu")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task DeleteWaifu([Remainder] string waifu)
+        {
+            bool deleted = false;
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                deleted = uow.Waifus.DeleteWaifu(waifu);
+            }
+
+            if (deleted)
+                await Context.Channel.SendSuccessAsync($"Deleted waifu: {waifu}");
+        }
+
+        [Command("DeleteWaifu")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task DeleteWaifu(int ID)
+        {
+            bool deleted = false;
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                deleted = uow.Waifus.DeleteWaifu(ID);
+            }
+
+            if (deleted)
+                await Context.Channel.SendSuccessAsync($"Deleted waifu with ID: {ID}");
+        }
     }
 }

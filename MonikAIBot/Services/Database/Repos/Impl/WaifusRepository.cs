@@ -21,6 +21,26 @@ namespace MonikAIBot.Services.Database.Repos.Impl
             _context.SaveChanges();
         }
 
+        public bool DeleteWaifu(string waifu)
+        {
+            Waifus w = _set.FirstOrDefault(x => x.Waifu.ToLower() == waifu.ToLower());
+            if (w == null) return false;
+
+            _set.Remove(w);
+            _context.SaveChanges();
+            return true;
+        }
+
+        public bool DeleteWaifu(int ID)
+        {
+            Waifus w = _set.FirstOrDefault(x => x.ID == ID);
+            if (w == null) return false;
+
+            _set.Remove(w);
+            _context.SaveChanges();
+            return true;
+        }
+
         public string GetRandomWaifu()
         {
             return _set.RandomItem().Waifu;

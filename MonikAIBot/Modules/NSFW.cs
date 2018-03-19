@@ -57,21 +57,27 @@ namespace MonikAIBot.Modules
             arr = await SetupReponse(tags, page);
             if (arr == null) return null;
 
+            _logger.Log("Count Response Setup", "Waifu");
+
             //Using the count element
             XElement CountElm = arr.First();
             int imageCount = Int32.Parse(CountElm.Attributes().Where(x => x.Name.ToString().ToLower() == "count").FirstOrDefault().Value);
 
+            _logger.Log($"Image Count: {imageCount}", "Waifu");
+
+            int totalPages = (int) Math.Ceiling((double)(imageCount / limit));
+
             //Now lets get the actual thing
-            page = _random.Next(0, 1 + (int) Math.Ceiling((double)(imageCount/limit)));
+            page = _random.Next(0, totalPages + 1);
+
+            _logger.Log($"Page: {page}", "Waifu");
 
             //If we're here we have a response stirng
             arr = await SetupReponse(tags, page);
-
             if (arr == null) return null;
 
-            //delay for 1/2 a second to help with API rate limiting
-            await Task.Delay(500);
-            
+            _logger.Log($"Response Found", "Waifu");
+
             //We do this in case it picks the first item at random... 
             while (imageURL == null)
             {
@@ -80,6 +86,8 @@ namespace MonikAIBot.Modules
 
                 //Now lets use that element's fileurl
                 imageURL = elm.Attributes().Where(x => x.Name.ToString().ToLower() == "file_url").FirstOrDefault()?.Value ?? null;
+
+                _logger.Log($"ImageURL: {imageURL}", "Waifu");
             }
 
             return imageURL;
@@ -87,6 +95,9 @@ namespace MonikAIBot.Modules
 
         private async Task<string> APIResponse(string fullURL)
         {
+            //delay for 1/2 a second to help with API rate limiting
+            await Task.Delay(500);
+
             //Make the request
             using (var httpClient = new HttpClient())
             {
@@ -98,10 +109,14 @@ namespace MonikAIBot.Modules
         {
             string APIURLComplete = APIUrl.Replace("{page}", page.ToString()).Replace("{tags}", tags).Replace("{limit}", limit.ToString());
 
+            _logger.Log($"APIURLComplete: {APIURLComplete}", "Waifu");
+
             //Response string
             string response = await APIResponse(APIURLComplete);
 
             if (response == null) return null;
+
+            _logger.Log($"No null response", "Waifu");
 
             //If we're here we have a response stirng
             return XDocument.Parse(response).Descendants().ToArray();
