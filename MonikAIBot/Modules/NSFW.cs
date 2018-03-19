@@ -18,7 +18,7 @@ namespace MonikAIBot.Modules
         private readonly MonikAIBotLogger _logger;
 
         //API Stuff
-        private readonly string APIUrl = "https://gelbooru.com/index.php?page=dapi&s=post&q=index&tags={tags}+-comic&pid={page}&limit={limit}";
+        private readonly string APIUrl = "https://gelbooru.com/index.php?page=dapi&s=post&q=index&tags={tags}+-comic+-lolicon+-loli&pid={page}&limit={limit}";
         private int limit = 100;
 
         public NSFW(Random random, MonikAIBotLogger logger)
