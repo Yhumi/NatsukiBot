@@ -67,6 +67,9 @@ namespace MonikAIBot.Modules
 
                 //If we're here we have a response stirng
                 arr = XDocument.Parse(response).Descendants().ToArray();
+
+                //delay for 1/2 a second to help with API rate limiting
+                await Task.Delay(500);
             }
             
             while (imageURL == null)
