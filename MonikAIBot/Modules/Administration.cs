@@ -622,5 +622,36 @@ namespace MonikAIBot.Modules
 
             await Context.Channel.SendSuccessAsync($"Added waifu: {waifu}");
         }
+
+        [Command("ListWaifus")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task ListWaifus(int page = 0)
+        {
+            if (page != 0)
+                page -= 1;
+
+            List<Waifus> Ws;
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                Ws = uow.Waifus.GetWaifus(page);
+            }
+
+            if (!Ws.Any())
+            {
+                await Context.Channel.SendErrorAsync($"No Waifus found for page {page + 1}");
+                return;
+            }
+
+            EmbedBuilder embed = new EmbedBuilder().WithOkColour().WithTitle($"Waifus").WithFooter(efb => efb.WithText($"Page: {page + 1}"));
+
+            foreach (Waifus w in Ws)
+            {
+                EmbedFieldBuilder efb = new EmbedFieldBuilder().WithName(w.ID.ToString()).WithValue(w.Waifu);
+
+                embed.AddField(efb);
+            }
+
+            await Context.Channel.BlankEmbedAsync(embed);
+        }
     }
 }

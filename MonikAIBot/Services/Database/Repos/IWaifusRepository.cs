@@ -7,6 +7,6 @@ namespace MonikAIBot.Services.Database.Repos
     {
         void AddWaifu(string waifu);
         string GetRandomWaifu();
-        List<Waifus> GetWaifus();
+        List<Waifus> GetWaifus(int page = 0);
     }
 }

@@ -26,9 +26,10 @@ namespace MonikAIBot.Services.Database.Repos.Impl
             return _set.RandomItem().Waifu;
         }
 
-        public List<Waifus> GetWaifus()
+        public List<Waifus> GetWaifus(int page = 0)
         {
-            return _set.ToList();
+            int offset = page * 9;
+            return _set.OrderBy(x => x.ID).Skip(offset).Take(9).ToList();
         }
     }
 }
