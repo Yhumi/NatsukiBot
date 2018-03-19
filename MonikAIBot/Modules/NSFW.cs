@@ -62,9 +62,6 @@ namespace MonikAIBot.Modules
                 //Response string
                 string response = await APIResponse(APIURLComplete);
 
-                //Now handle it, if it's null we return otherwise the task is awaited.
-                if (response == null) return null;
-
                 //If we're here we have a response stirng
                 arr = XDocument.Parse(response).Descendants().ToArray();
             }
