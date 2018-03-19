@@ -52,26 +52,27 @@ namespace MonikAIBot.Modules
             string imageURL = null;
             XElement[] arr = new XElement[0];
 
-            while (arr.Count() <= 1)
-            {
-                int page = _random.Next(0, 10);
+            //First we get the exact count
+            int page = 0;
+            arr = await SetupReponse(tags, page);
+            if (arr == null) return null;
 
-                //Format the URL
-                string APIURLComplete = APIUrl.Replace("{page}", page.ToString()).Replace("{tags}", tags).Replace("{limit}", limit.ToString());
+            //Using the count element
+            XElement CountElm = arr.First();
+            int imageCount = Int32.Parse(CountElm.Attributes().Where(x => x.Name.ToString().ToLower() == "count").FirstOrDefault().Value);
 
-                //Response string
-                string response = await APIResponse(APIURLComplete);
+            //Now lets get the actual thing
+            page = _random.Next(0, 1 + (int) Math.Ceiling((double)(imageCount/100)));
 
-                //Now handle it, if it's null we return otherwise the task is awaited.
-                if (response == null) return null;
+            //If we're here we have a response stirng
+            arr = await SetupReponse(tags, page);
 
-                //If we're here we have a response stirng
-                arr = XDocument.Parse(response).Descendants().ToArray();
+            if (arr == null) return null;
 
-                //delay for 1/2 a second to help with API rate limiting
-                await Task.Delay(500);
-            }
+            //delay for 1/2 a second to help with API rate limiting
+            await Task.Delay(500);
             
+            //We do this in case it picks the first item at random... 
             while (imageURL == null)
             {
                 //We can get one of these elements at random
@@ -91,6 +92,19 @@ namespace MonikAIBot.Modules
             {
                 return await httpClient.GetStringAsync(fullURL);
             }
+        }
+
+        private async Task<XElement[]> SetupReponse(string tags, int page)
+        {
+            string APIURLComplete = APIUrl.Replace("{page}", page.ToString()).Replace("{tags}", tags).Replace("{limit}", limit.ToString());
+
+            //Response string
+            string response = await APIResponse(APIURLComplete);
+
+            if (response == null) return null;
+
+            //If we're here we have a response stirng
+            return XDocument.Parse(response).Descendants().ToArray();
         }
     }
 }
