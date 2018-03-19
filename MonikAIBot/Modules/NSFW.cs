@@ -41,7 +41,11 @@ namespace MonikAIBot.Modules
             string imageURL = await GetImageURL(waifu.Replace(' ', '_').ToLower());
 
             //Big issue?!
-            if (imageURL == null) return;
+            if (imageURL == null)
+            {
+                await Context.Channel.SendErrorAsync("No image URL found. Most likely a mistake.");
+                return;
+            }
 
             //We have the URL let us use it
             await Context.Channel.SendPictureAsync($"{waifu}", "", $"{imageURL}");
@@ -79,8 +83,13 @@ namespace MonikAIBot.Modules
 
             _logger.Log($"Response Found", "Waifu");
 
+            //Loop counter to stop infinite failure
+            int loops = 0;
+
+            _logger.Log($"Finding Image URL", "Waifu");
+
             //We do this in case it picks the first item at random... 
-            while (imageURL == null)
+            while (imageURL == null && loops <= 4)
             {
                 //We can get one of these elements at random
                 XElement elm = arr.RandomItem();
@@ -88,10 +97,19 @@ namespace MonikAIBot.Modules
                 //Now lets use that element's fileurl
                 imageURL = elm.Attributes().Where(x => x.Name.ToString().ToLower() == "file_url").FirstOrDefault()?.Value ?? null;
 
-                _logger.Log($"ImageURL: {imageURL}", "Waifu");
+                loops++;
             }
 
-            return imageURL;
+            if (!String.IsNullOrEmpty(imageURL))
+            {
+                _logger.Log($"ImageURL: {imageURL}", "Waifu");
+
+                return imageURL;
+            }
+
+            _logger.Log($"No image found", "Waifu");
+
+            return null;
         }
 
         private async Task<string> APIResponse(string fullURL)

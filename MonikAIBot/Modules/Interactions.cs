@@ -89,20 +89,27 @@ namespace MonikAIBot.Modules
 
             if (arr == null) return null;
 
-            //delay for 1/2 a second to help with API rate limiting
-            await Task.Delay(500);
+            //Loop counter to stop infinite failure
+            int loops = 0;
 
             //We do this in case it picks the first item at random... 
-            while (imageURL == null)
+            while (imageURL == null && loops <= 4)
             {
                 //We can get one of these elements at random
                 XElement elm = arr.RandomItem();
 
                 //Now lets use that element's fileurl
                 imageURL = elm.Attributes().Where(x => x.Name.ToString().ToLower() == "file_url").FirstOrDefault()?.Value ?? null;
+
+                loops++;
             }
 
-            return imageURL;
+            if (!String.IsNullOrEmpty(imageURL))
+            {
+                return imageURL;
+            }
+
+            return null;
         }
 
         [Command("MCWhitelist"), Summary("Adds a user to the whitelist.")]
@@ -142,6 +149,9 @@ namespace MonikAIBot.Modules
 
         private async Task<string> APIResponse(string fullURL)
         {
+            //delay for 1/2 a second to help with API rate limiting
+            await Task.Delay(500);
+
             //Make the request
             using (var httpClient = new HttpClient())
             {
