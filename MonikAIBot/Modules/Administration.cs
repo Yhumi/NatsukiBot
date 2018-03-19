@@ -651,6 +651,8 @@ namespace MonikAIBot.Modules
                 desc += $"{w.ID}. {w.Waifu}\n";
             }
 
+            embed.WithDescription(desc);
+
             await Context.Channel.BlankEmbedAsync(embed);
         }
     }
