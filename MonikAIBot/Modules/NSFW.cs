@@ -18,7 +18,7 @@ namespace MonikAIBot.Modules
         private readonly MonikAIBotLogger _logger;
 
         //API Stuff
-        private readonly string APIUrl = "https://gelbooru.com/index.php?page=dapi&s=post&q=index&tags={tags}&pid=0&limit={limit}";
+        private readonly string APIUrl = "https://gelbooru.com/index.php?page=dapi&s=post&q=index&tags={tags}&pid={page}&limit={limit}";
         private int limit = 100;
 
         public NSFW(Random random, MonikAIBotLogger logger)
@@ -49,22 +49,28 @@ namespace MonikAIBot.Modules
 
         private async Task<string> GetImageURL(string tags)
         {
-            //Format the URL
-            string APIURLComplete = APIUrl.Replace("{tags}", tags).Replace("{limit}", limit.ToString());
-
-            //Response string
-            string response = await APIResponse(APIURLComplete);
-
-            //Now handle it, if it's null we return otherwise the task is awaited.
-            if (response == null) return null;
-
             string imageURL = null;
+            XElement[] arr = new XElement[0];
 
+            while (arr.Count() == 0)
+            {
+                int page = _random.Next(0, 20);
+
+                //Format the URL
+                string APIURLComplete = APIUrl.Replace("{page}", page.ToString()).Replace("{tags}", tags).Replace("{limit}", limit.ToString());
+
+                //Response string
+                string response = await APIResponse(APIURLComplete);
+
+                //Now handle it, if it's null we return otherwise the task is awaited.
+                if (response == null) return null;
+
+                //If we're here we have a response stirng
+                arr = XDocument.Parse(response).Descendants().ToArray();
+            }
+            
             while (imageURL == null)
             {
-                //If we're here we have a response stirng
-                XElement[] arr = XDocument.Parse(response).Descendants().ToArray();
-
                 //We can get one of these elements at random
                 XElement elm = arr.RandomItem();
 
