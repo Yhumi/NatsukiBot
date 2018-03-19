@@ -52,15 +52,18 @@ namespace MonikAIBot.Modules
             string imageURL = null;
             XElement[] arr = new XElement[0];
 
-            while (arr.Count() == 0)
+            while (arr.Count() <= 1)
             {
-                int page = _random.Next(0, 20);
+                int page = _random.Next(0, 10);
 
                 //Format the URL
                 string APIURLComplete = APIUrl.Replace("{page}", page.ToString()).Replace("{tags}", tags).Replace("{limit}", limit.ToString());
 
                 //Response string
                 string response = await APIResponse(APIURLComplete);
+
+                //Now handle it, if it's null we return otherwise the task is awaited.
+                if (response == null) return null;
 
                 //If we're here we have a response stirng
                 arr = XDocument.Parse(response).Descendants().ToArray();
