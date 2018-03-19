@@ -62,7 +62,7 @@ namespace MonikAIBot.Modules
             int imageCount = Int32.Parse(CountElm.Attributes().Where(x => x.Name.ToString().ToLower() == "count").FirstOrDefault().Value);
 
             //Now lets get the actual thing
-            page = _random.Next(0, 1 + (int) Math.Ceiling((double)(imageCount/100)));
+            page = _random.Next(0, 1 + (int) Math.Ceiling((double)(imageCount/limit)));
 
             //If we're here we have a response stirng
             arr = await SetupReponse(tags, page);
