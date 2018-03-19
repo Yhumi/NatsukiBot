@@ -644,11 +644,11 @@ namespace MonikAIBot.Modules
 
             EmbedBuilder embed = new EmbedBuilder().WithOkColour().WithTitle($"Waifus").WithFooter(efb => efb.WithText($"Page: {page + 1}"));
 
+            string desc = "";
+
             foreach (Waifus w in Ws)
             {
-                EmbedFieldBuilder efb = new EmbedFieldBuilder().WithName("").WithValue(w.ID.ToString() + ". " + w.Waifu);
-
-                embed.AddField(efb);
+                desc += $"{w.ID}. {w.Waifu}\n";
             }
 
             await Context.Channel.BlankEmbedAsync(embed);
