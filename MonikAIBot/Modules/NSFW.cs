@@ -63,12 +63,13 @@ namespace MonikAIBot.Modules
             XElement CountElm = arr.First();
             int imageCount = Int32.Parse(CountElm.Attributes().Where(x => x.Name.ToString().ToLower() == "count").FirstOrDefault().Value);
 
-            _logger.Log($"Image Count: {imageCount}", "Waifu");
-
             int totalPages = (int) Math.Ceiling((double)(imageCount / limit));
 
+            _logger.Log($"Image Count: {imageCount}", "Waifu");
+            _logger.Log($"Page Count: {totalPages}", "Waifu");
+
             //Now lets get the actual thing
-            page = _random.Next(0, totalPages + 1);
+            page = _random.Next(0, totalPages);
 
             _logger.Log($"Page: {page}", "Waifu");
 
