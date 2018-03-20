@@ -64,7 +64,7 @@ namespace MonikAIBot.Modules
             if (imageURL == null) return;
 
             //We have the URL let us use it
-            await Context.Channel.SendPictureAsync("Kissing <3", $"{Context.User.Username} is giving {user.Username} a kiss! <3", $"https:{imageURL}");
+            await Context.Channel.SendPictureAsync("Kissing <3", $"{Context.User.Username} is giving {user.Username} a kiss! <3", $"{imageURL}");
         }
 
         private async Task<string> GetImageURL(string tags)
