@@ -25,6 +25,11 @@ namespace MonikAIBot.Services
                 {
                     _client.SetGameAsync(status);
                 }
+                if (rotation)
+                {
+                    status = uow.BotStatuses.GetStatus().Status;
+                    _client.SetGameAsync(status);
+                }
             }
 
             Statuses();
