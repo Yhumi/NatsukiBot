@@ -34,30 +34,33 @@ namespace MonikAIBot.Modules
         [Command("Hug"), Summary("Hug a given user")]
         public async Task Hug(IGuildUser user)
         {
+            if (Context.User.Id == user.Id) return;
             string imageURL = await GetImageURL("hug+animated");
 
             //Big issue?!
             if (imageURL == null) return;
 
             //We have the URL let us use it
-            await Context.Channel.SendPictureAsync("Hugging <3", $"{Context.User.Username} is giving {user.Username} a hug! <3", $"https:{imageURL}");
+            await Context.Channel.SendPictureAsync("Hugging <3", $"{Context.User.Username} is giving {user.Username} a hug! <3", $"{imageURL}");
         }
 
         [Command("Pet"), Summary("Pet a given user")]
         public async Task Pat(IGuildUser user)
         {
+            if (Context.User.Id == user.Id) return;
             string imageURL = await GetImageURL("petting+animated");
 
             //Big issue?!
             if (imageURL == null) return;
 
             //We have the URL let us use it
-            await Context.Channel.SendPictureAsync("Petting <3", $"{Context.User.Username} is petting {user.Username}! <3", $"https:{imageURL}");
+            await Context.Channel.SendPictureAsync("Petting <3", $"{Context.User.Username} is petting {user.Username}! <3", $"{imageURL}");
         }
 
         [Command("Kiss"), Summary("Kiss a given user")]
         public async Task Kiss(IGuildUser user)
         {
+            if (Context.User.Id == user.Id) return;
             string imageURL = await GetImageURL("kiss+animated");
 
             //Big issue?!

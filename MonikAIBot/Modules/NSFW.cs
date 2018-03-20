@@ -55,6 +55,7 @@ namespace MonikAIBot.Modules
         [Command("Lick")]
         public async Task Lick(IGuildUser user)
         {
+            if (Context.User.Id == user.Id) return;
             string imageURL = await GetImageURL("licking+animated+rating%3asafe");
 
             //Big issue?!
