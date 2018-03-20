@@ -615,12 +615,19 @@ namespace MonikAIBot.Modules
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task AddWaifu([Remainder] string waifu)
         {
+            bool success = false;
             using (var uow = DBHandler.UnitOfWork())
             {
-                uow.Waifus.AddWaifu(waifu);
+                success = uow.Waifus.AddWaifu(waifu);
             }
 
-            await Context.Channel.SendSuccessAsync($"Added waifu: {waifu}");
+            if (success)
+            {
+                await Context.Channel.SendSuccessAsync($"Added waifu: {waifu}");
+                return;
+            }
+
+            await Context.Channel.SendErrorAsync($"Waifu already exists.");
         }
 
         [Command("ListWaifus")]
@@ -682,6 +689,25 @@ namespace MonikAIBot.Modules
 
             if (deleted)
                 await Context.Channel.SendSuccessAsync($"Deleted waifu with ID: {ID}");
+        }
+
+        [Command("SearchWaifu")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task SearchWaifu([Remainder] string waifu)
+        {
+            Waifus w;
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                w = uow.Waifus.SearchWaifus(waifu);
+            }
+
+            if (w == null)
+            {
+                await Context.Channel.SendErrorAsync("Waifu not found.");
+                return;
+            }
+
+            await Context.Channel.SendSuccessAsync($"Waifu Found! #{w.ID}", $"{w.Waifu}");
         }
 
         [Command("AddStatus")]
