@@ -35,6 +35,12 @@ namespace MonikAIBot.Services.Database
         private IWaifusRepository _waifus;
         public IWaifusRepository Waifus => _waifus ?? (_waifus = new WaifusRepository(_context));
 
+        private IBotConfigRepository _botConfig;
+        public IBotConfigRepository BotConfig => _botConfig ?? (_botConfig = new BotConfigRepository(_context));
+
+        private IBotStatusesRepository _botStatuses;
+        public IBotStatusesRepository BotStatuses => _botStatuses ?? (_botStatuses = new BotStatusesRepository(_context));
+
         public UnitOfWork(DBContext context)
         {
             _context = context;

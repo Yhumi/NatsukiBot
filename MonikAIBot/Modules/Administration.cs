@@ -683,5 +683,119 @@ namespace MonikAIBot.Modules
             if (deleted)
                 await Context.Channel.SendSuccessAsync($"Deleted waifu with ID: {ID}");
         }
+
+        [Command("AddStatus")]
+        [OwnerOnly]
+        public async Task AddStatus([Remainder] string status)
+        {
+            if (String.IsNullOrWhiteSpace(status)) return;
+            if (status.Length > 24) return;
+
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                uow.BotStatuses.AddStatus(status);
+            }
+
+            await Context.Channel.SendSuccessAsync($"Added status: {status}");
+        }
+
+        [Command("AddStream")]
+        [OwnerOnly]
+        public async Task AddStream(string url, [Remainder] string status)
+        {
+            if (String.IsNullOrWhiteSpace(status)) return;
+            if (status.Length > 24) return;
+
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                uow.BotStatuses.AddStatus(status, true, url);
+            }
+
+            await Context.Channel.SendSuccessAsync($"Added stream: {status} | url: {url}");
+        }
+
+        [Command("DeleteStatus")]
+        [OwnerOnly]
+        public async Task DeleteStatus(int ID)
+        {
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                uow.BotStatuses.DeleteStatus(ID);
+            }
+
+            await Context.Channel.SendSuccessAsync($"Deleted stauts: {ID}");
+        }
+
+        [Command("DeleteStatus")]
+        [OwnerOnly]
+        public async Task DeleteStatus([Remainder] string status)
+        {
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                uow.BotStatuses.DeleteStatus(status);
+            }
+
+            await Context.Channel.SendSuccessAsync($"Deleted stauts: {status}");
+        }
+
+        [Command("ListStatuses")]
+        [OwnerOnly]
+        public async Task ListStatus(int page = 0)
+        {
+            if (page != 0)
+                page -= 1;
+
+            List<BotStatuses> BS;
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                BS = uow.BotStatuses.GetBotStatuses(page);
+            }
+
+            if (!BS.Any())
+            {
+                await Context.Channel.SendErrorAsync($"No Bot Statuses found for page {page + 1}");
+                return;
+            }
+
+            EmbedBuilder embed = new EmbedBuilder().WithOkColour().WithTitle($"BotStatuses").WithFooter(efb => efb.WithText($"Page: {page + 1}"));
+
+            string desc = "";
+
+            foreach (BotStatuses B in BS)
+            {
+                desc += $"{B.ID}. {B.Status} | Is Stream: {B.Streaming.ToString()} | Url: {B.StreamURL}\n";
+            }
+
+            embed.WithDescription(desc);
+
+            await Context.Channel.BlankEmbedAsync(embed);
+        }
+
+        [Command("SetDefaultStatus")]
+        [OwnerOnly]
+        public async Task SetDefaultStatus([Remainder] string status)
+        {
+            if (String.IsNullOrWhiteSpace(status)) return;
+            if (status.Length > 24) return;
+
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                uow.BotConfig.SetDefaultStatus(Context.Client.CurrentUser.Id, status);
+            }
+
+            await Context.Channel.SendSuccessAsync($"Set default status: {status}");
+        }
+
+        [Command("SetRotatingStatus")]
+        [OwnerOnly]
+        public async Task SetRotatingStatus(bool rs)
+        {
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                uow.BotConfig.SetRotatingStatuses(Context.Client.CurrentUser.Id, rs);
+            }
+
+            await Context.Channel.SendSuccessAsync($"Set rotating statuses to: {rs.ToString()}");
+        }
     }
 }

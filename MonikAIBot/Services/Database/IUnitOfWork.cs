@@ -16,6 +16,8 @@ namespace MonikAIBot.Services.Database
         IBlockedLogsRepository BlockedLogs { get; }
         IAutoBanRepository AutoBan { get; }
         IWaifusRepository Waifus { get; }
+        IBotConfigRepository BotConfig { get; }
+        IBotStatusesRepository BotStatuses { get; }
 
         int Complete();
         Task<int> CompleteAsync();

@@ -25,6 +25,8 @@ namespace MonikAIBot.Services.Database
         public DbSet<BlockedLogs> BlockedLogs { get; set; }
         public DbSet<AutoBan> AutoBan { get; set; }
         public DbSet<Waifus> Waifus { get; set; }
+        public DbSet<BotConfig> BotConfig { get; set; }
+        public DbSet<BotStatuses> BotStatuses { get; set; }
 
         public DBContext() : base()
         {

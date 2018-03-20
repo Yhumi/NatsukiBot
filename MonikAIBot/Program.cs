@@ -31,6 +31,7 @@ namespace MonikAIBot
         private Random _random;
 
         private BirthdayService birthdayService = new BirthdayService();
+        private BotStatusService statusService = new BotStatusService();
 
         private RCON _rcon;
 
@@ -71,7 +72,8 @@ namespace MonikAIBot
             provider.GetRequiredService<ImageRateLimitHandler>();
             provider.GetRequiredService<DeletedMessageHandler>();
 
-            await _client.SetGameAsync("with cupcakes! <3");
+            //Stops crashing due to these services below
+            await Task.Delay(2000);
 
             //Start birthdays
             int hours = 9;
@@ -79,6 +81,8 @@ namespace MonikAIBot
             var date = new DateTime(dateNow.Year, dateNow.Month, dateNow.Day, hours, 0, 0);
 
             birthdayService.StartBirthdays(date, _client, _config, _random);
+
+            statusService.StartBotStatuses(_client);
 
             await Task.Delay(-1);
         }
