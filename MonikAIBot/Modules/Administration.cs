@@ -784,6 +784,7 @@ namespace MonikAIBot.Modules
             }
 
             await Context.Channel.SendSuccessAsync($"Set default status: {status}");
+            await SetGame(status);
         }
 
         [Command("SetRotatingStatus")]
