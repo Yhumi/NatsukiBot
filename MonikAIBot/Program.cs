@@ -71,6 +71,8 @@ namespace MonikAIBot
             provider.GetRequiredService<ImageRateLimitHandler>();
             provider.GetRequiredService<DeletedMessageHandler>();
 
+            await _client.SetGameAsync("with cupcakes! <3");
+
             //Start birthdays
             int hours = 9;
             var dateNow = DateTime.Now;
