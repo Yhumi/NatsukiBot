@@ -10,6 +10,7 @@
     <Compile Remove="Services\Database\Repos\Impl\GreetMessages.cs" />
     <Compile Remove="Services\Database\Repos\Impl\ServerRepository.cs" />
     <Compile Remove="Services\Database\Repos\IServerRepository.cs" />
+    <Compile Remove="Services\GelbooruService.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -74,32 +74,21 @@ namespace MonikAIBot.Modules
             arr = await SetupReponse(tags, page);
             if (arr == null) return null;
 
-            _logger.Log("Count Response Setup", "Waifu");
-
             //Using the count element
             XElement CountElm = arr.First();
             int imageCount = Int32.Parse(CountElm.Attributes().Where(x => x.Name.ToString().ToLower() == "count").FirstOrDefault().Value);
 
             int totalPages = (int) Math.Ceiling((double)(imageCount / limit));
 
-            _logger.Log($"Image Count: {imageCount}", "Waifu");
-            _logger.Log($"Page Count: {totalPages}", "Waifu");
-
             //Now lets get the actual thing
             page = _random.Next(0, totalPages);
-
-            _logger.Log($"Page: {page}", "Waifu");
 
             //If we're here we have a response stirng
             arr = await SetupReponse(tags, page);
             if (arr == null) return null;
 
-            _logger.Log($"Response Found", "Waifu");
-
             //Loop counter to stop infinite failure
             int loops = 0;
-
-            _logger.Log($"Finding Image URL", "Waifu");
 
             //We do this in case it picks the first item at random... 
             while (imageURL == null && loops <= 4)
@@ -115,12 +104,8 @@ namespace MonikAIBot.Modules
 
             if (!String.IsNullOrEmpty(imageURL))
             {
-                _logger.Log($"ImageURL: {imageURL}", "Waifu");
-
                 return imageURL;
             }
-
-            _logger.Log($"No image found", "Waifu");
 
             return null;
         }
