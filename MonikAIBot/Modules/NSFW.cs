@@ -51,6 +51,18 @@ namespace MonikAIBot.Modules
             await Context.Channel.SendPictureAsync($"{waifu}", "", $"{imageURL}");
         }
 
+        [Command("Lick")]
+        public async Task Lick(IGuildUser user)
+        {
+            string imageURL = await GetImageURL("licking+animated+rating%3asafe");
+
+            //Big issue?!
+            if (imageURL == null) return;
+
+            //We have the URL let us use it
+            await Context.Channel.SendPictureAsync("Petting <3", $"{Context.User.Username} is licking {user.Username}! <3", $"https:{imageURL}");
+        }
+
         private async Task<string> GetImageURL(string tags)
         {
             string imageURL = null;

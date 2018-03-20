@@ -21,7 +21,7 @@ namespace MonikAIBot.Modules
         private readonly RCON _rcon;
 
         //API Stuff
-        private readonly string APIUrl = "https://safebooru.org/index.php?page=dapi&s=post&q=index&tags={tags}+-comic+rating%3asafe+-photo&pid={page}&limit={limit}";
+        private readonly string APIUrl = "https://gelbooru.com/index.php?page=dapi&s=post&q=index&tags={tags}+-comic+-photo+rating%3asafe&pid={page}&limit={limit}";
         private int limit = 100;
 
         public Interactions(Random random, MonikAIBotLogger logger, RCON rcon)
