@@ -1,4 +1,5 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Commands;
 using MonikAIBot.Services;
 using System;
 using System.Collections.Generic;
