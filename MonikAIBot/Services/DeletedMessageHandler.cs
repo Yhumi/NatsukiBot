@@ -104,7 +104,7 @@ namespace MonikAIBot.Services
 
             var ChannelToSend = (IMessageChannel)_discord.GetChannel(ChannelID);
 
-            string message = GM.Message.Replace("{user}", GuildUser.Username);
+            string message = GM.Message.Replace("{user}", GuildUser.Mention);
             await ChannelToSend.SendMessageAsync(message);
         }
 
