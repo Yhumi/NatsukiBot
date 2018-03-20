@@ -128,14 +128,10 @@ namespace MonikAIBot.Modules
         {
             string APIURLComplete = APIUrl.Replace("{page}", page.ToString()).Replace("{tags}", tags).Replace("{limit}", limit.ToString());
 
-            _logger.Log($"APIURLComplete: {APIURLComplete}", "Waifu");
-
             //Response string
             string response = await APIResponse(APIURLComplete);
 
             if (response == null) return null;
-
-            _logger.Log($"No null response", "Waifu");
 
             //If we're here we have a response stirng
             return XDocument.Parse(response).Descendants().ToArray();
