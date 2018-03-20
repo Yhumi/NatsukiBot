@@ -59,6 +59,11 @@ namespace MonikAIBot.Services
             return ch.SendMessageAsync("", embed: eb.Build());
         }
 
+        public static string NicknameUsername(this IGuildUser user)
+        {
+            return user?.Nickname ?? user.Username;
+        }
+
         public static Task<IUserMessage> SendSuccessAsync(this IMessageChannel ch, string text)
             => ch.SendMessageAsync("", embed: new EmbedBuilder().WithOkColour().WithDescription(text).Build());
 

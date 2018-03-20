@@ -55,6 +55,7 @@ namespace MonikAIBot.Modules
         [Command("Lick")]
         public async Task Lick(IGuildUser user)
         {
+            IGuildUser CurUser = (IGuildUser)Context.User;
             if (Context.User.Id == user.Id) return;
             string imageURL = await GetImageURL("licking+animated+rating%3asafe");
 
@@ -62,7 +63,7 @@ namespace MonikAIBot.Modules
             if (imageURL == null) return;
 
             //We have the URL let us use it
-            await Context.Channel.SendPictureAsync("Petting <3", $"{Context.User.Username} is licking {user.Username}! <3", $"https:{imageURL}");
+            await Context.Channel.SendPictureAsync("Petting <3", $"{CurUser.NicknameUsername()} is licking {user.NicknameUsername()}! <3", $"{imageURL}");
         }
 
         private async Task<string> GetImageURL(string tags)
