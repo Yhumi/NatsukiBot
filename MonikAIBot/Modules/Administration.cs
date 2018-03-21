@@ -824,5 +824,17 @@ namespace MonikAIBot.Modules
 
             await Context.Channel.SendSuccessAsync($"Set rotating statuses to: {rs.ToString()}");
         }
+
+        [Command("ResetPersonalWaifu")]
+        [OwnerOnly]
+        public async Task ResetPersonalWaifu(IGuildUser user)
+        {
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                uow.User.SetPersonalWaifu(user.Id, "");
+            }
+
+            await Context.Channel.SendSuccessAsync($"Reset pwaifu for ${user.NicknameUsername()}");
+        }
     }
 }
