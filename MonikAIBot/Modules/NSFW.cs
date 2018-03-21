@@ -230,7 +230,6 @@ namespace MonikAIBot.Modules
 
             if (!String.IsNullOrEmpty(imageURL))
             {
-                _logger.Log(imageURL, "ImageURL");
                 return imageURL;
             }
 
@@ -252,8 +251,6 @@ namespace MonikAIBot.Modules
         private async Task<XElement[]> SetupReponse(string tags, int page)
         {
             string APIURLComplete = APIUrl.Replace("{page}", page.ToString()).Replace("{tags}", tags).Replace("{limit}", limit.ToString());
-
-            _logger.Log(APIURLComplete, "URL");
 
             //Response string
             string response = await APIResponse(APIURLComplete);
