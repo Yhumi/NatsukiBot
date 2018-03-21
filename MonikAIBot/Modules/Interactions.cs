@@ -45,7 +45,7 @@ namespace MonikAIBot.Modules
             await Context.Channel.SendPictureAsync("Hugging <3", $"{CurUser.NicknameUsername()} is giving {user.NicknameUsername()} a hug! <3", $"{imageURL}");
         }
 
-        [Command("GroupHug"), Summary("Hug a given user")]
+        [Command("GroupHug"), Summary("Hug the group")]
         [Alias("GHug", "HugAll", "HugA")]
         public async Task GroupHug()
         {
