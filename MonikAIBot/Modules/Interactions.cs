@@ -113,6 +113,7 @@ namespace MonikAIBot.Modules
 
             if (!String.IsNullOrEmpty(imageURL))
             {
+                _logger.Log(imageURL, "ImageURL");
                 return imageURL;
             }
 
