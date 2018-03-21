@@ -10,5 +10,6 @@ namespace MonikAIBot.Services.Database.Models
         public bool IsExempt { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string MinecraftUsername { get; set; }
+        public string PersonalWaifu { get; set; }
     }
 }

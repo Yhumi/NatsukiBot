@@ -28,7 +28,8 @@ namespace MonikAIBot.Services.Database.Repos.Impl
                     UserID = UserID,
                     IsExempt = Exemption,
                     DateOfBirth = (DateTime)dt,
-                    MinecraftUsername = "none"
+                    MinecraftUsername = "none",
+                    PersonalWaifu = ""
                 });
                 _context.SaveChanges();
             }
@@ -111,6 +112,23 @@ namespace MonikAIBot.Services.Database.Repos.Impl
         {
             User u = GetOrCreateUser(UserDiscordID);
             return u.MinecraftUsername;
+        }
+
+        public string SetPersonalWaifu(ulong UserDiscordID, string waifu)
+        {
+            User u = GetOrCreateUser(UserDiscordID);
+            u.PersonalWaifu = waifu;
+
+            _set.Update(u);
+            _context.SaveChanges();
+
+            return u.PersonalWaifu;
+        }
+
+        public string GetPersonalWaifu(ulong UserDiscordID)
+        {
+            User u = GetOrCreateUser(UserDiscordID);
+            return u.PersonalWaifu;
         }
     }
 }

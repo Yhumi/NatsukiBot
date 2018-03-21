@@ -52,6 +52,38 @@ namespace MonikAIBot.Modules
             await Context.Channel.SendPictureAsync($"{waifu}", "", $"{imageURL}");
         }
 
+        [Command("PersonalWaifu")]
+        [Alias("PWaifu")]
+        public async Task PersonalWaifu()
+        {
+            string pwaifu = null;
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                pwaifu = uow.User.GetPersonalWaifu(Context.User.Id);
+            }
+
+            if (pwaifu == "")
+            {
+                using (var uow = DBHandler.UnitOfWork())
+                {
+                    string waifuToAttribute = uow.Waifus.GetRandomWaifu();
+                    pwaifu = uow.User.SetPersonalWaifu(Context.User.Id, waifuToAttribute);
+                }
+            }
+
+            string imageURL = await GetImageURL(pwaifu.Replace(' ', '_').ToLower());
+
+            //Big issue?!
+            if (imageURL == null)
+            {
+                await Context.Channel.SendErrorAsync("No image URL found. Most likely a mistake.");
+                return;
+            }
+
+            //We have the URL let us use it
+            await Context.Channel.SendPictureAsync($"{pwaifu}", "", $"{imageURL}");
+        }
+
         [Command("Lick")]
         public async Task Lick(IGuildUser user)
         {
