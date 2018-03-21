@@ -95,7 +95,21 @@ namespace MonikAIBot.Modules
             if (imageURL == null) return;
 
             //We have the URL let us use it
-            await Context.Channel.SendPictureAsync("Petting <3", $"{CurUser.NicknameUsername()} is licking {user.NicknameUsername()}! <3", $"{imageURL}");
+            await Context.Channel.SendPictureAsync("Licking <3", $"{CurUser.NicknameUsername()} is licking {user.NicknameUsername()}! <3", $"{imageURL}");
+        }
+
+        [Command("Suck")]
+        public async Task Suck(IGuildUser user)
+        {
+            IGuildUser CurUser = (IGuildUser)Context.User;
+            if (Context.User.Id == user.Id) return;
+            string imageURL = await GetImageURL("sucking+animated");
+
+            //Big issue?!
+            if (imageURL == null) return;
+
+            //We have the URL let us use it
+            await Context.Channel.SendPictureAsync("Sucking <3", $"{CurUser.NicknameUsername()} is sucking {user.NicknameUsername()}...", $"{imageURL}");
         }
 
         private async Task<string> GetImageURL(string tags)

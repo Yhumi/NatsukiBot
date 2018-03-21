@@ -834,7 +834,7 @@ namespace MonikAIBot.Modules
                 uow.User.SetPersonalWaifu(user.Id, "");
             }
 
-            await Context.Channel.SendSuccessAsync($"Reset pwaifu for ${user.NicknameUsername()}");
+            await Context.Channel.SendSuccessAsync($"Reset pwaifu for {user.NicknameUsername()}");
         }
     }
 }
