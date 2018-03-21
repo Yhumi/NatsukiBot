@@ -99,11 +99,29 @@ namespace MonikAIBot.Modules
         }
 
         [Command("Suck")]
-        public async Task Suck(IGuildUser user)
+        public async Task Suck(IGuildUser user, string type = "both")
         {
             IGuildUser CurUser = (IGuildUser)Context.User;
             if (Context.User.Id == user.Id) return;
-            string imageURL = await GetImageURL("sucking+animated");
+            string imageURL = null;
+
+            switch (type.ToLower())
+            {
+                default:
+                case "both":
+                case "b"
+                    imageURL = await GetImageURL("sucking+animated");
+                    break;
+                case "straight":
+                case "s":
+                    imageURL = await GetImageURL("sucking+animated+-yaoi");
+                    break;
+                case "gay":
+                case "g":
+                case "yaoi":
+                    imageURL = await GetImageURL("sucking+animated+yaoi");
+                    break;
+            }
 
             //Big issue?!
             if (imageURL == null) return;
