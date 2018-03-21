@@ -130,6 +130,43 @@ namespace MonikAIBot.Modules
             await Context.Channel.SendPictureAsync("Sucking <3", $"{CurUser.NicknameUsername()} is sucking {user.NicknameUsername()}...", $"{imageURL}");
         }
 
+        [Command("Fuck")]
+        public async Task Fuck(IGuildUser user, string type = "both")
+        {
+            IGuildUser CurUser = (IGuildUser)Context.User;
+            if (Context.User.Id == user.Id) return;
+            string imageURL = null;
+
+            switch (type.ToLower())
+            {
+                default:
+                case "both":
+                case "b":
+                    imageURL = await GetImageURL("sex+animated");
+                    break;
+                case "straight":
+                case "s":
+                    imageURL = await GetImageURL("sex+animated+-yaoi+-yuri");
+                    break;
+                case "gay":
+                case "g":
+                case "yaoi":
+                    imageURL = await GetImageURL("sex+animated+yaoi+-yuri");
+                    break;
+                case "lesbian":
+                case "l":
+                case "yuri":
+                    imageURL = await GetImageURL("sex+animated+yuri+-yaoi");
+                    break;
+            }
+
+            //Big issue?!
+            if (imageURL == null) return;
+
+            //We have the URL let us use it
+            await Context.Channel.SendPictureAsync("Fucking <3", $"{CurUser.NicknameUsername()} is fucking {user.NicknameUsername()}...", $"{imageURL}");
+        }
+
         private async Task<string> GetImageURL(string tags)
         {
             string imageURL = null;
