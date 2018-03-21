@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
@@ -167,6 +168,28 @@ namespace MonikAIBot.Modules
             await Context.Channel.SendPictureAsync("Fucking <3", $"{CurUser.NicknameUsername()} is fucking {user.NicknameUsername()}...", $"{imageURL}");
         }
 
+        [Command("GelbooruSearch")]
+        [Alias("Gelbooru", "GBS")]
+        public async Task GelbooruSearch([Remainder] string tags)
+        {
+            //Lets start by perfecting the tags
+            string ParsedTags = tags.ParseBooruTags();
+
+            _logger.Log(ParsedTags.ToLower(), "GBS");
+
+            string imageURL = await GetImageURL(ParsedTags.ToLower());
+
+            //Big issue?!
+            if (imageURL == null)
+            {
+                await Context.Channel.SendErrorAsync("No image URL found. Most likely a mistake with your tags.");
+                return;
+            }
+
+            //We have the URL let us use it
+            await Context.Channel.SendPictureAsync($"{tags}", "", $"{imageURL}");
+        }
+
         private async Task<string> GetImageURL(string tags)
         {
             string imageURL = null;
@@ -229,6 +252,8 @@ namespace MonikAIBot.Modules
         private async Task<XElement[]> SetupReponse(string tags, int page)
         {
             string APIURLComplete = APIUrl.Replace("{page}", page.ToString()).Replace("{tags}", tags).Replace("{limit}", limit.ToString());
+
+            _logger.Log(APIURLComplete, "URL");
 
             //Response string
             string response = await APIResponse(APIURLComplete);

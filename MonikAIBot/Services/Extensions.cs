@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace MonikAIBot.Services
@@ -86,5 +87,17 @@ namespace MonikAIBot.Services
 
         public static Task<IUserMessage> BlankEmbedAsync(this IMessageChannel ch, Embed embed)
             => ch.SendMessageAsync("", false, embed);
+
+        public static string ParseBooruTags(this string str)
+        {
+            //Remove whitespace around +
+            str = Regex.Replace(str, @"\s*([+])\s*", "$1");
+
+            //Fix up remaining whitespace if there's two or more
+            str = Regex.Replace(str, "[ ]{2,}", " ");
+
+            //Finally any single-spaces are now replaced by underscores
+            return str.Replace(' ', '_');
+        }
     }
 }
