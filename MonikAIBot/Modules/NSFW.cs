@@ -109,7 +109,7 @@ namespace MonikAIBot.Modules
             {
                 default:
                 case "both":
-                case "b"
+                case "b":
                     imageURL = await GetImageURL("sucking+animated");
                     break;
                 case "straight":
