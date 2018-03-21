@@ -131,7 +131,7 @@ namespace MonikAIBot.Modules
         }
 
         [Command("Fuck")]
-        public async Task Fuck(IGuildUser user, string type = "both")
+        public async Task Fuck(IGuildUser user, string type = "all")
         {
             IGuildUser CurUser = (IGuildUser)Context.User;
             if (Context.User.Id == user.Id) return;
@@ -140,8 +140,8 @@ namespace MonikAIBot.Modules
             switch (type.ToLower())
             {
                 default:
-                case "both":
-                case "b":
+                case "all":
+                case "a":
                     imageURL = await GetImageURL("sex+animated");
                     break;
                 case "straight":
