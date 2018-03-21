@@ -110,16 +110,16 @@ namespace MonikAIBot.Modules
                 default:
                 case "both":
                 case "b":
-                    imageURL = await GetImageURL("sucking+animated");
+                    imageURL = await GetImageURL("fellatio+animated");
                     break;
                 case "straight":
                 case "s":
-                    imageURL = await GetImageURL("sucking+animated+-yaoi");
+                    imageURL = await GetImageURL("fellatio+animated+-yaoi");
                     break;
                 case "gay":
                 case "g":
                 case "yaoi":
-                    imageURL = await GetImageURL("sucking+animated+yaoi");
+                    imageURL = await GetImageURL("fellatio+animated+yaoi");
                     break;
             }
 
