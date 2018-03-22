@@ -30,6 +30,12 @@ namespace MonikAIBot.Services
         public static Task<IUserMessage> SendErrorAsync(this IMessageChannel ch, string text)
             => ch.SendMessageAsync("", embed: new EmbedBuilder().WithErrorColour().WithDescription(text).Build());
 
+        public static Embed EmbedErrorAsync(this EmbedBuilder eb, string text)
+            => eb.WithErrorColour().WithDescription(text).Build();
+
+        public static Embed EmbedSuccessAsync(this EmbedBuilder eb, string text)
+            => eb.WithOkColour().WithDescription(text).Build();
+
         public static Task<IUserMessage> SendSuccessAsync(this IMessageChannel ch, string title, string text, string url = null, string footer = null)
         {
             var eb = new EmbedBuilder().WithOkColour().WithDescription(text).WithTitle(title);
@@ -50,6 +56,18 @@ namespace MonikAIBot.Services
             if (!string.IsNullOrWhiteSpace(footer))
                 eb.WithFooter(efb => efb.WithText(footer));
             return ch.SendMessageAsync("", embed: eb.Build());
+        }
+
+        public static Embed PictureEmbed(this EmbedBuilder eb, string title, string text, string pic, string url = null, string footer = null)
+        {
+            eb.WithOkColour().WithDescription(text).WithTitle(title);
+            if (pic != null && Uri.IsWellFormedUriString(pic, UriKind.Absolute))
+                eb.WithImageUrl(pic);
+            if (url != null && Uri.IsWellFormedUriString(url, UriKind.Absolute))
+                eb.WithUrl(url);
+            if (!string.IsNullOrWhiteSpace(footer))
+                eb.WithFooter(efb => efb.WithText(footer));
+            return eb.Build();
         }
 
         public static Task<IUserMessage> SendPictureAsync(this IMessageChannel ch, string pic)

@@ -30,7 +30,7 @@ namespace MonikAIBot.Modules
         }
 
         [Command("Waifu")]
-        public async Task Waifu()
+        public async Task Waifu([Remainder] string extraTags = null)
         {
             string waifu = null;
             using (var uow = DBHandler.UnitOfWork())
@@ -40,17 +40,33 @@ namespace MonikAIBot.Modules
 
             if (waifu == null) return;
 
-            string imageURL = await GetImageURL(waifu.Replace(' ', '_').ToLower());
+            if (extraTags != null)
+            {
+                if (extraTags.StartsWith("+"))
+                {
+                    extraTags = extraTags.Substring(1);
+                }
+
+                waifu += " + " + extraTags; 
+            }
+
+            string parsedWaifu = waifu.ParseBooruTags();
+
+            var message = await Context.Channel.SendSuccessAsync("Searching...");
+
+            string imageURL = await GetImageURL(parsedWaifu);
+
+            EmbedBuilder eb = new EmbedBuilder();
 
             //Big issue?!
             if (imageURL == null)
             {
-                await Context.Channel.SendErrorAsync("No image URL found. Most likely a mistake.");
+                await message.ModifyAsync(x => x.Embed = eb.EmbedErrorAsync("No images found. Most likely a mistake with your tags."));
                 return;
             }
 
             //We have the URL let us use it
-            await Context.Channel.SendPictureAsync($"{waifu}", "", $"{imageURL}");
+            await message.ModifyAsync(x => x.Embed = eb.PictureEmbed($"{waifu}", "", $"{imageURL}"));
         }
 
         [Command("PersonalWaifu")]
@@ -72,17 +88,21 @@ namespace MonikAIBot.Modules
                 }
             }
 
+            var message = await Context.Channel.SendSuccessAsync("Searching...");
+
             string imageURL = await GetImageURL(pwaifu.Replace(' ', '_').ToLower());
+
+            EmbedBuilder eb = new EmbedBuilder();
 
             //Big issue?!
             if (imageURL == null)
             {
-                await Context.Channel.SendErrorAsync("No image URL found. Most likely a mistake.");
+                await message.ModifyAsync(x => x.Embed = eb.EmbedErrorAsync("No images found. Most likely a mistake with your tags."));
                 return;
             }
 
             //We have the URL let us use it
-            await Context.Channel.SendPictureAsync($"{pwaifu}", "", $"{imageURL}");
+            await message.ModifyAsync(x => x.Embed = eb.PictureEmbed($"{pwaifu}", "", $"{imageURL}"));
         }
 
         [Command("Lick")]
@@ -175,17 +195,21 @@ namespace MonikAIBot.Modules
             //Lets start by perfecting the tags
             string ParsedTags = tags.ParseBooruTags();
 
+            var message = await Context.Channel.SendSuccessAsync("Searching...");
+
             string imageURL = await GetImageURL(ParsedTags.ToLower());
+
+            EmbedBuilder eb = new EmbedBuilder();
 
             //Big issue?!
             if (imageURL == null)
             {
-                await Context.Channel.SendErrorAsync("No image URL found. Most likely a mistake with your tags.");
+                await message.ModifyAsync(x => x.Embed = eb.EmbedErrorAsync("No images found. Most likely a mistake with your tags."));
                 return;
             }
 
             //We have the URL let us use it
-            await Context.Channel.SendPictureAsync($"{tags}", "", $"{imageURL}");
+            await message.ModifyAsync(x => x.Embed = eb.PictureEmbed($"{tags}", "", $"{imageURL}"));
         }
 
         private async Task<string> GetImageURL(string tags)
