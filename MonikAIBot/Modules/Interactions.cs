@@ -70,7 +70,7 @@ namespace MonikAIBot.Modules
             if (imageURL == null) return;
 
             //We have the URL let us use it
-            await Context.Channel.SendPictureAsync("Petting <3", $"{CurUser.NicknameUsername()} is petting {user.NicknameUsername()}! <3", $"{imageURL}");
+            await Context.Channel.SendPictureAsync("Patting <3", $"{CurUser.NicknameUsername()} is patting {user.NicknameUsername()}! <3", $"{imageURL}");
         }
 
         [Command("Kiss"), Summary("Kiss a given user")]
