@@ -59,6 +59,7 @@ namespace MonikAIBot.Modules
         }
 
         [Command("Pet"), Summary("Pet a given user")]
+        [Alias("Pat")]
         public async Task Pat(IGuildUser user)
         {
             IGuildUser CurUser = (IGuildUser)Context.User;
