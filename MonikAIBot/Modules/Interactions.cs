@@ -102,6 +102,9 @@ namespace MonikAIBot.Modules
 
             int totalPages = (int)Math.Ceiling((double)(imageCount / limit));
 
+            //It seems to break over 200
+            if (totalPages > 200) totalPages = 200;
+
             //Now lets get the actual thing
             page = _random.Next(0, totalPages);
 

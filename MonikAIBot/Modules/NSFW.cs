@@ -175,8 +175,6 @@ namespace MonikAIBot.Modules
             //Lets start by perfecting the tags
             string ParsedTags = tags.ParseBooruTags();
 
-            _logger.Log(ParsedTags.ToLower(), "GBS");
-
             string imageURL = await GetImageURL(ParsedTags.ToLower());
 
             //Big issue?!
@@ -205,6 +203,9 @@ namespace MonikAIBot.Modules
             int imageCount = Int32.Parse(CountElm.Attributes().Where(x => x.Name.ToString().ToLower() == "count").FirstOrDefault().Value);
 
             int totalPages = (int) Math.Ceiling((double)(imageCount / limit));
+
+            //It seems to break over 200
+            if (totalPages > 200) totalPages = 200;
 
             //Now lets get the actual thing
             page = _random.Next(0, totalPages);
@@ -251,6 +252,8 @@ namespace MonikAIBot.Modules
         private async Task<XElement[]> SetupReponse(string tags, int page)
         {
             string APIURLComplete = APIUrl.Replace("{page}", page.ToString()).Replace("{tags}", tags).Replace("{limit}", limit.ToString());
+
+            _logger.Log(APIURLComplete, "Debug");
 
             //Response string
             string response = await APIResponse(APIURLComplete);
