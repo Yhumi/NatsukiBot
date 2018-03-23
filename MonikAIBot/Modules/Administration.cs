@@ -593,6 +593,12 @@ namespace MonikAIBot.Modules
         [OwnerOnly]
         public async Task ResetMinecraftName(IGuildUser user)
         {
+            if (_rcon == null)
+            {
+                await Context.Channel.SendErrorAsync("No minecraft server specified.");
+                return;
+            }
+
             using (var uow = DBHandler.UnitOfWork())
             {
                 string GetMCName = uow.User.GetMinecraftUsername(user.Id);
