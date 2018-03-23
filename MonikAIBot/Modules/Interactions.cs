@@ -141,6 +141,12 @@ namespace MonikAIBot.Modules
         [Alias("WhitelistMe", "MCWL")]
         public async Task MCWhitelist([Remainder] string username)
         {
+            if (_rcon == null)
+            {
+                await Context.Channel.SendErrorAsync("No minecraft server specified.");
+                return;
+            }
+
             using (var uow = DBHandler.UnitOfWork())
             {
                 string MCName = uow.User.GetMinecraftUsername(Context.User.Id);

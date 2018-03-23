@@ -570,6 +570,12 @@ namespace MonikAIBot.Modules
         [OwnerOnly]
         public async Task ExecuteMCRCON([Remainder] string command)
         {
+            if (_rcon == null)
+            {
+                await Context.Channel.SendErrorAsync("No minecraft server specified.");
+                return;
+            }
+
             try
             {
                 await _rcon.ConnectAsync();

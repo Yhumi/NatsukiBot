@@ -33,7 +33,7 @@ namespace MonikAIBot
         private BirthdayService birthdayService = new BirthdayService();
         private BotStatusService statusService = new BotStatusService();
 
-        private RCON _rcon;
+        private RCON _rcon = null;
 
         private Program()
         {
@@ -53,7 +53,11 @@ namespace MonikAIBot
         {
             _config = JsonConvert.DeserializeObject<Configuration>(File.ReadAllText(@"data/config.json"));
             _random = new Random();
-            _rcon = new RCON(IPAddress.Parse(_config.RconIP), _config.RconPort, _config.RCONPassword);
+
+            if (_config.RconIP != "")
+            {
+                _rcon = new RCON(IPAddress.Parse(_config.RconIP), _config.RconPort, _config.RCONPassword);
+            }                             
 
             //Set ondisconnect
             _rcon.OnDisconnected += OnDisconnected;
