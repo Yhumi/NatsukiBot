@@ -73,15 +73,17 @@ namespace MonikAIBot.Services
             //Alright we need to limit shit now. 
             //Lets check if the user is allowed to post
             bool canPost = true;
+            int UserPostsSinceLastTrack = 0;
             using (var uow = DBHandler.UnitOfWork())
             {
                 canPost = uow.UserRate.CanUserPostImages(C.ID, U.ID, C.CooldownTime, C.MaxPosts);
+                UserPostsSinceLastTrack = uow.UserRate.GetPostsSinceLastTrack(C.ID, U.ID);
             }
 
             int amountToAdd = context.Message.Attachments.Count + Matches.Count;
 
             //If they can post we need to add one to their posts and then we're done here
-            if (canPost)
+            if (canPost && amountToAdd <= (C.MaxPosts - UserPostsSinceLastTrack))
             {
                 using (var uow = DBHandler.UnitOfWork())
                 {
@@ -92,14 +94,8 @@ namespace MonikAIBot.Services
             }
 
             //If they can't post we have a lot to deal with here.
-            //Make a list of the message (cause apparently we can't just delete one)
-            List<IMessage> messageList = new List<IMessage>()
-            {
-                context.Message
-            };
-
             //First we have to actually delete the message
-            await context.Channel.DeleteMessagesAsync(messageList);
+            await context.Message.DeleteAsync();
 
             //Then we need to tell the user not to post so quick
             var tellingOff = await context.Channel.SendErrorAsync("Slow down dummy!");

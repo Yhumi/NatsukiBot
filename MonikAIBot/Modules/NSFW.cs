@@ -18,20 +18,39 @@ namespace MonikAIBot.Modules
     {
         private readonly Random _random;
         private readonly MonikAIBotLogger _logger;
+        private readonly Cooldowns _cooldowns;
 
         //API Stuff
         private readonly string APIUrl = "https://gelbooru.com/index.php?page=dapi&s=post&q=index&tags={tags}+-shota+-shotacon+-comic+-lolicon+-loli+-photo+-webm+-furry&pid={page}&limit={limit}";
         private int limit = 100;
 
-        public NSFW(Random random, MonikAIBotLogger logger)
+        public NSFW(Random random, MonikAIBotLogger logger, Cooldowns cooldowns)
         {
             _random = random;
             _logger = logger;
+            _cooldowns = cooldowns;
+
+            _cooldowns.GetOrSetupCommandCooldowns("NSFW");
         }
 
         [Command("Waifu")]
         public async Task Waifu([Remainder] string extraTags = null)
         {
+            DateTime curTime = DateTime.Now;
+            DateTime lastMessage;
+
+            lastMessage = _cooldowns.GetUserCooldownsForCommand("NSFW", Context.User.Id);
+
+            if (lastMessage + new TimeSpan(0, 1, 0) > curTime)
+            {
+                var msg = await Context.Channel.SendErrorAsync("You may only use one of these NSFW commands per minute");
+                Context.Message.DeleteAfter(3);
+                msg.DeleteAfter(3);
+                return;
+            }
+
+            _cooldowns.AddUserCooldowns("NSFW", Context.User.Id, curTime);
+
             string waifu = null;
             using (var uow = DBHandler.UnitOfWork())
             {
@@ -73,6 +92,21 @@ namespace MonikAIBot.Modules
         [Alias("PWaifu")]
         public async Task PersonalWaifu()
         {
+            DateTime curTime = DateTime.Now;
+            DateTime lastMessage;
+
+            lastMessage = _cooldowns.GetUserCooldownsForCommand("NSFW", Context.User.Id);
+
+            if (lastMessage + new TimeSpan(0, 1, 0) > curTime)
+            {
+                var msg = await Context.Channel.SendErrorAsync("You may only use one of these NSFW commands per minute");
+                Context.Message.DeleteAfter(3);
+                msg.DeleteAfter(3);
+                return;
+            }
+
+            _cooldowns.AddUserCooldowns("NSFW", Context.User.Id, curTime);
+
             string pwaifu = null;
             using (var uow = DBHandler.UnitOfWork())
             {
@@ -192,6 +226,21 @@ namespace MonikAIBot.Modules
         [Alias("Gelbooru", "GBS")]
         public async Task GelbooruSearch([Remainder] string tags)
         {
+            DateTime curTime = DateTime.Now;
+            DateTime lastMessage;
+
+            lastMessage = _cooldowns.GetUserCooldownsForCommand("NSFW", Context.User.Id);
+
+            if (lastMessage + new TimeSpan(0, 1, 0) > curTime)
+            {
+                var msg = await Context.Channel.SendErrorAsync("You may only use one of these NSFW commands per minute");
+                Context.Message.DeleteAfter(3);
+                msg.DeleteAfter(3);
+                return;
+            }
+
+            _cooldowns.AddUserCooldowns("NSFW", Context.User.Id, curTime);
+
             //Lets start by perfecting the tags
             string ParsedTags = tags.ParseBooruTags();
 
