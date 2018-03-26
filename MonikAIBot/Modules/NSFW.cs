@@ -78,7 +78,7 @@ namespace MonikAIBot.Modules
             //Big issue?!
             if (imageURL == null)
             {
-                await message.ModifyAsync(x => x.Embed = eb.EmbedErrorAsync($"No images found. The specified tags probably don't exist for {waifu}."));
+                await message.ModifyAsync(x => x.Embed = eb.EmbedErrorAsync($"No images found. The specified tags probably don't exist: {waifu}."));
                 return;
             }
 
