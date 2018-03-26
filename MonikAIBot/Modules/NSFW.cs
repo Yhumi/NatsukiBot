@@ -43,7 +43,7 @@ namespace MonikAIBot.Modules
 
             if (lastMessage + new TimeSpan(0, 2, 0) > curTime)
             {
-                var msg = await Context.Channel.SendErrorAsync("You may only use one of these NSFW commands per minute");
+                var msg = await Context.Channel.SendErrorAsync("You may only use one of these NSFW commands every two minutes.");
                 Context.Message.DeleteAfter(3);
                 msg.DeleteAfter(3);
                 return;
@@ -99,7 +99,7 @@ namespace MonikAIBot.Modules
 
             if (lastMessage + new TimeSpan(0, 2, 0) > curTime)
             {
-                var msg = await Context.Channel.SendErrorAsync("You may only use one of these NSFW commands per minute");
+                var msg = await Context.Channel.SendErrorAsync("You may only use one of these NSFW commands every two minutes.");
                 Context.Message.DeleteAfter(3);
                 msg.DeleteAfter(3);
                 return;
@@ -233,7 +233,7 @@ namespace MonikAIBot.Modules
 
             if (lastMessage + new TimeSpan(0, 2, 0) > curTime)
             {
-                var msg = await Context.Channel.SendErrorAsync("You may only use one of these NSFW commands per minute");
+                var msg = await Context.Channel.SendErrorAsync("You may only use one of these NSFW commands every two minutes.");
                 Context.Message.DeleteAfter(3);
                 msg.DeleteAfter(3);
                 return;
