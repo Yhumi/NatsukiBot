@@ -41,15 +41,13 @@ namespace MonikAIBot.Modules
 
             lastMessage = _cooldowns.GetUserCooldownsForCommand("NSFW", Context.User.Id);
 
-            if (lastMessage + new TimeSpan(0, 1, 0) > curTime)
+            if (lastMessage + new TimeSpan(0, 2, 0) > curTime)
             {
                 var msg = await Context.Channel.SendErrorAsync("You may only use one of these NSFW commands per minute");
                 Context.Message.DeleteAfter(3);
                 msg.DeleteAfter(3);
                 return;
             }
-
-            _cooldowns.AddUserCooldowns("NSFW", Context.User.Id, curTime);
 
             string waifu = null;
             using (var uow = DBHandler.UnitOfWork())
@@ -80,9 +78,11 @@ namespace MonikAIBot.Modules
             //Big issue?!
             if (imageURL == null)
             {
-                await message.ModifyAsync(x => x.Embed = eb.EmbedErrorAsync("No images found. Most likely a mistake with your tags."));
+                await message.ModifyAsync(x => x.Embed = eb.EmbedErrorAsync($"No images found. The specified tags probably don't exist for {waifu}."));
                 return;
             }
+
+            _cooldowns.AddUserCooldowns("NSFW", Context.User.Id, curTime);
 
             //We have the URL let us use it
             await message.ModifyAsync(x => x.Embed = eb.PictureEmbed($"{waifu}", "", $"{imageURL}"));
@@ -97,15 +97,13 @@ namespace MonikAIBot.Modules
 
             lastMessage = _cooldowns.GetUserCooldownsForCommand("NSFW", Context.User.Id);
 
-            if (lastMessage + new TimeSpan(0, 1, 0) > curTime)
+            if (lastMessage + new TimeSpan(0, 2, 0) > curTime)
             {
                 var msg = await Context.Channel.SendErrorAsync("You may only use one of these NSFW commands per minute");
                 Context.Message.DeleteAfter(3);
                 msg.DeleteAfter(3);
                 return;
             }
-
-            _cooldowns.AddUserCooldowns("NSFW", Context.User.Id, curTime);
 
             string pwaifu = null;
             using (var uow = DBHandler.UnitOfWork())
@@ -134,6 +132,8 @@ namespace MonikAIBot.Modules
                 await message.ModifyAsync(x => x.Embed = eb.EmbedErrorAsync("No images found. Most likely a mistake with your tags."));
                 return;
             }
+
+            _cooldowns.AddUserCooldowns("NSFW", Context.User.Id, curTime);
 
             //We have the URL let us use it
             await message.ModifyAsync(x => x.Embed = eb.PictureEmbed($"{pwaifu}", "", $"{imageURL}"));
@@ -231,15 +231,13 @@ namespace MonikAIBot.Modules
 
             lastMessage = _cooldowns.GetUserCooldownsForCommand("NSFW", Context.User.Id);
 
-            if (lastMessage + new TimeSpan(0, 1, 0) > curTime)
+            if (lastMessage + new TimeSpan(0, 2, 0) > curTime)
             {
                 var msg = await Context.Channel.SendErrorAsync("You may only use one of these NSFW commands per minute");
                 Context.Message.DeleteAfter(3);
                 msg.DeleteAfter(3);
                 return;
             }
-
-            _cooldowns.AddUserCooldowns("NSFW", Context.User.Id, curTime);
 
             //Lets start by perfecting the tags
             string ParsedTags = tags.ParseBooruTags();
@@ -256,6 +254,8 @@ namespace MonikAIBot.Modules
                 await message.ModifyAsync(x => x.Embed = eb.EmbedErrorAsync("No images found. Most likely a mistake with your tags."));
                 return;
             }
+
+            _cooldowns.AddUserCooldowns("NSFW", Context.User.Id, curTime);
 
             //We have the URL let us use it
             await message.ModifyAsync(x => x.Embed = eb.PictureEmbed($"{tags}", "", $"{imageURL}"));
