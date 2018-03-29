@@ -106,9 +106,9 @@ namespace MonikAIBot.Modules
 
             if (user == null) return;
 
-            var message = await Context.Channel.SendMessageAsync(user.Mention);
-            message.DeleteAfter(1);
-            await Context.Channel.SendSuccessAsync("🎉 Raffle 🎉", $"{user.Username} has won {item}! Not like I wanted to give that to you though...");
+            var msg = await Context.Channel.SendMessageAsync(user.Mention);
+            msg.DeleteAfter(1);
+            await Context.Channel.SendSuccessAsync("🎉 Raffle 🎉", $"{user.Username + "#" + user.Discriminator} has won {item}! Not like I wanted to give that to you though...");
         } 
 
         private async Task<string> GetImageURL(string tags)
