@@ -89,6 +89,7 @@ namespace MonikAIBot.Modules
 
         [Command("PickUser"), Summary("Raffle from a role, no role means everyone.")]
         [Alias("Raffle")]
+        [RequireUserPermission(GuildPermission.MentionEveryone)]
         [RequireContext(ContextType.Guild)]
         public async Task PickUser(string item, IRole role = null)
         {
