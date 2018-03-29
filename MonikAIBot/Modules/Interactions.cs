@@ -87,6 +87,29 @@ namespace MonikAIBot.Modules
             await Context.Channel.SendPictureAsync("Kissing <3", $"{CurUser.NicknameUsername()} is giving {user.NicknameUsername()} a kiss! <3", $"{imageURL}");
         }
 
+        [Command("PickUser"), Summary("Raffle from a role, no role means everyone.")]
+        [Alias("Raffle")]
+        [RequireContext(ContextType.Guild)]
+        public async Task PickUser(string item, IRole role = null)
+        {
+            IGuildUser user = null;
+            var userList = await Context.Guild.GetUsersAsync();
+            if (role == null)
+            {               
+                user = userList.RandomItem();
+            }
+            else
+            {
+                user = userList.Where(x => x.RoleIds.Contains(role.Id)).RandomItem();
+            }
+
+            if (user == null) return;
+
+            var message = await Context.Channel.SendMessageAsync(user.Mention);
+            message.DeleteAfter(1);
+            await Context.Channel.SendSuccessAsync("🎉 Raffle 🎉", $"{user.Username} has won {item}! Not like I wanted to give that to you though...");
+        } 
+
         private async Task<string> GetImageURL(string tags)
         {
             string imageURL = null;
