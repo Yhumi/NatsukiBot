@@ -10,5 +10,6 @@ namespace MonikAIBot.Services.Database.Models
         public bool State { get; set; }
         public TimeSpan CooldownTime { get; set; } 
         public int MaxPosts { get; set; }
+        public ulong VoiceChannelLink { get; set; }
     }
 }

@@ -531,12 +531,21 @@ namespace MonikAIBot.Modules
         [OwnerOnly]
         public async Task SetVCNotifyChannel(IGuildChannel channel)
         {
-            using (var uow = DBHandler.UnitOfWork())
+            var user = (IGuildUser)Context.User;
+            var vc = user.VoiceChannel;
+
+            if (vc == null || vc.GuildId != user.GuildId)
             {
-                uow.Guild.SetVCNotifyChannel(Context.Guild.Id, channel.Id);
+                await Context.Channel.SendErrorAsync("You must be in a voice channel.");
+                return;
             }
 
-            await Context.Channel.SendSuccessAsync($"Set guild's VC Notify channel to: {channel.Name}");
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                uow.Channels.SetVCChannelLink(vc.Id, channel.Id);
+            }
+
+            await Context.Channel.SendSuccessAsync($"Set {vc.Name}'s VC Notify channel to: {channel.Name}");
         }
 
         [Command("AddAutoBan")]
