@@ -56,11 +56,7 @@ namespace MonikAIBot.Services
             }
             else
             {
-                ServerID = arg3.VoiceChannel.Guild.Id;
-                ChannelName = arg3.VoiceChannel.Name;
-                curChannel = arg3.VoiceChannel;
-
-                joined = true;
+                return;
             }
 
             Guild G = null;
