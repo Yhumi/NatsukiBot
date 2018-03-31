@@ -37,7 +37,6 @@ namespace MonikAIBot.Services
         {
             ulong ServerID;
             string ChannelName = "";
-            bool swapped = false;
             bool joined = false;
             SocketVoiceChannel curChannel;
             if (arg3.VoiceChannel == null)
