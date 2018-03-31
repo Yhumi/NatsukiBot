@@ -92,6 +92,22 @@ namespace MonikAIBot.Services
         public static EmbedBuilder WithErrorColour(this EmbedBuilder eb)
             => eb.WithColor(16711731);
 
+        public async static Task RemoveAllRoles(this IGuildUser user, IGuild guild)
+        {
+            //Collection of roles
+            List<IRole> roles = new List<IRole>();
+
+            //Sort out the roles now
+            foreach (ulong roleID in user.RoleIds)
+            {
+                IRole role = guild.GetRole(roleID);
+                if (!(role == guild.EveryoneRole))
+                    roles.Add(role);
+            }
+
+            await user.RemoveRolesAsync(roles);
+        }
+
         public static IMessage DeleteAfter(this IUserMessage msg, int seconds)
         {
             Task.Run(async () =>

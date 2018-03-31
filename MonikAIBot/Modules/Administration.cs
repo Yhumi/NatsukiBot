@@ -945,10 +945,7 @@ namespace MonikAIBot.Modules
                     roles.Add(role);
             }
 
-            if (_config.DefaultRole != 0)
-            {
-                await user.RemoveRoleAsync(Context.Guild.GetRole(_config.DefaultRole));
-            }
+            await user.RemoveAllRoles(Context.Guild);
 
             //Add the roles they deserve
             await user.AddRolesAsync(roles);
