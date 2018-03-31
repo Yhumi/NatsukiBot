@@ -26,8 +26,8 @@ namespace MonikAIBot.Modules.Fun.Services
                 int notpushed = total - pushed;
 
                 EmbedBuilder embed = new EmbedBuilder().WithOkColour()
-                    .WithTitle("Would you push the Button? Results.")
-                    .WithDescription("If " + game.Benefit.Trim() + " but " + game.Consequence.Trim())
+                    .WithTitle("Push the Button Game Results.")
+                    .WithDescription("Would you push the button if **" + game.Benefit.Trim() + "** but **" + game.Consequence.Trim() + "**?")
                     .AddField(new EmbedFieldBuilder().WithName("✅ Yes").WithValue(pushed).WithIsInline(true))
                     .AddField(new EmbedFieldBuilder().WithName("❌ No").WithValue(notpushed).WithIsInline(true));
 
