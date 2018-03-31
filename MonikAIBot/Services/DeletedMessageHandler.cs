@@ -40,7 +40,6 @@ namespace MonikAIBot.Services
             bool swapped = false;
             bool joined = false;
             SocketVoiceChannel curChannel;
-            SocketVoiceChannel prevChannel = null;
             if (arg3.VoiceChannel == null)
             {
                 //They're no longer connected;
@@ -58,51 +57,26 @@ namespace MonikAIBot.Services
             }
             else
             {
-                prevChannel = arg2.VoiceChannel;
                 ServerID = arg3.VoiceChannel.Guild.Id;
                 ChannelName = arg3.VoiceChannel.Name;
                 curChannel = arg3.VoiceChannel;
 
-                if (curChannel.Guild.Id == prevChannel.Guild.Id)
-                    swapped = true;
-                else
-                    joined = true;
+                joined = true;
             }
 
             Guild G = null;
             Channels C = null;
-            Channels PC = null;
             using (var uow = DBHandler.UnitOfWork())
             {
                 //Lets get that guild
                 G = uow.Guild.GetOrCreateGuild(ServerID);
                 C = uow.Channels.GetOrCreateChannel(curChannel.Id, TimeSpan.FromMinutes(5));
-
-                if (swapped)
-                {
-                    PC = uow.Channels.GetOrCreateChannel(prevChannel.Id, TimeSpan.FromMinutes(5));
-                }
             }
 
             if (!G.VCNotifyEnable) return;
             if (C.VoiceChannelLink == 0) return;
 
             var channelToSend = (IMessageChannel)_discord.GetChannel(C.VoiceChannelLink);
-            IMessageChannel prevChannelToSend = null;
-
-            if (PC != null && PC.VoiceChannelLink != 0)
-            {
-                prevChannelToSend = (IMessageChannel)_discord.GetChannel(PC.VoiceChannelLink);
-            }
-
-            if (swapped)
-            {
-                if (prevChannelToSend != null)
-                    await prevChannelToSend.SendMessageAsync($"📣 {arg1.Username} has left {prevChannel.Name}. (Moved to {ChannelName}).");
-
-                await channelToSend.SendMessageAsync($"📣 {arg1.Mention} has joined {ChannelName}. (Joined from {prevChannel.Name}).");
-                return;
-            }
 
             if (joined)
             {
