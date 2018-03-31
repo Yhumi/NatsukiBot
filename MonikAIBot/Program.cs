@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using CoreRCON;
 using CoreRCON.Parsers.Standard;
 using System.Net;
+using MonikAIBot.Modules.Fun;
 
 //henlo world
 //messaging best admin, i am number 2 best
@@ -109,6 +110,7 @@ namespace MonikAIBot
             await _commands.AddModuleAsync<Administration>();
             await _commands.AddModuleAsync<Interactions>();
             await _commands.AddModuleAsync<NSFW>();
+            await _commands.AddModuleAsync<Fun>();
 
             _map.AddSingleton(_commands);
             _map.AddSingleton<CommandHandler>();
