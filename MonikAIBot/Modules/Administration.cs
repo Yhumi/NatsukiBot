@@ -5,9 +5,11 @@ using Discord.Net;
 using Discord.WebSocket;
 using MonikAIBot.Services;
 using MonikAIBot.Services.Database.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,12 +23,14 @@ namespace MonikAIBot.Modules
         private readonly DiscordSocketClient _client;
         private readonly Random _random;
         private readonly RCON _rcon;
+        private readonly Configuration _config;
 
-        public Administration(Random random, DiscordSocketClient client, RCON rcon)
+        public Administration(Random random, DiscordSocketClient client, RCON rcon, Configuration config)
         {
             _random = random;
             _client = client;
             _rcon = rcon;
+            _config = config;
         }
 
         [Command("Shutdown"), Summary("Kills the bot")]
@@ -857,5 +861,160 @@ namespace MonikAIBot.Modules
 
             await Context.Channel.SendSuccessAsync($"Reset pwaifu for {user.NicknameUsername()}");
         }
-    }
+
+        [Command("save"), Summary("Saves a given user's role")]
+        [RequireContext(ContextType.Guild)]
+        [RequireUserPermission(GuildPermission.ManageMessages)]
+        public async Task Save([Summary("Discord User to Save")] IGuildUser user, bool verbose = true)
+        {
+            //User and Server ID
+            ulong uID = user.Id;
+            ulong sID = Context.Guild.Id;
+
+            //Server directory path
+            string directory = @"data/characters/" + sID;
+
+            //Create the directory for the server if it does not exist
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
+            //Path to storage
+            string filePath = directory + @"/" + uID + ".chr";
+
+            //User's roles
+            List<ulong> roles = new List<ulong>(user.RoleIds);
+
+            //String roles
+            List<string> rolesString = new List<string>(roles.Count);
+
+            //If they've only got @everyone and newbies
+            if (roles.Count == 2 && roles.Contains(_config.DefaultRole))
+            {
+                if (verbose)
+                    await Context.Channel.SendErrorAsync("I don't think you need to do that, dummy.");
+                return;
+            }
+
+            //So it can be ported over easily
+            foreach (ulong rID in roles)
+            {
+                rolesString.Add($"{rID}");
+            }
+
+            //Serialize JSON
+            string json = JsonConvert.SerializeObject(rolesString);
+
+            //Write json to file (overwriting)
+            File.WriteAllText(filePath, json);
+
+            //Now tell the user we did it! Yay
+            if (verbose)
+                await Context.Channel.SendSuccessAsync("Saved roles for " + user.Mention);
+        }
+
+        [Command("Restore"), Summary("Restores a user's roles")]
+        [RequireContext(ContextType.Guild)]
+        [RequireUserPermission(GuildPermission.ManageMessages)]
+        public async Task Restore([Summary("Discord User to Restore")] IGuildUser user)
+        {
+            var sID = Context.Guild.Id;
+            var uID = user.Id;
+
+            //Server directory path
+            string directory = @"data/characters/" + sID;
+
+            //Path to storage
+            string filePath = directory + @"/" + uID + ".chr";
+
+            //Woah hold up there, they've not had roles saved
+            if (!File.Exists(filePath)) return;
+
+            //Get the roles
+            List<string> SavedRoles = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(filePath));
+
+            //Collection of roles
+            List<IRole> roles = new List<IRole>();
+
+            //Sort out the roles now
+            foreach (string id in SavedRoles)
+            {
+                IRole role = Context.Guild.GetRole(ulong.Parse(id));
+                if (!(role == Context.Guild.EveryoneRole))
+                    roles.Add(role);
+            }
+
+            if (_config.DefaultRole != 0)
+            {
+                await user.RemoveRoleAsync(Context.Guild.GetRole(_config.DefaultRole));
+            }
+
+            //Add the roles they deserve
+            await user.AddRolesAsync(roles);
+
+            //Now tell the user we did it! Yay
+            await Context.Channel.SendSuccessAsync("Restored roles for " + user.Mention);
+        }
+
+        [Command("SaveAll"), Summary("Saves all user's roles")]
+        [RequireContext(ContextType.Guild)]
+        [OwnerOnly]
+        public async Task SaveAll()
+        {
+            List<IGuildUser> users = new List<IGuildUser>(await Context.Guild.GetUsersAsync());
+
+            foreach (IGuildUser user in users)
+            {
+                await Save(user, false);
+            }
+
+            //Now tell the user we did it! Yay
+            await Context.Channel.SendSuccessAsync("Saved all users");
+        }
+
+        [Command("Delete")]
+        [RequireContext(ContextType.Guild)]
+        [OwnerOnly]
+        public async Task Delete(IGuildUser user)
+        {
+            var sID = Context.Guild.Id;
+            var uID = user.Id;
+
+            //Server directory path
+            string directory = @"data/characters/" + sID;
+
+            //Path to storage
+            string filePath = directory + @"/" + uID + ".chr";
+
+            //Woah hold up there, they've not had roles saved
+            if (!File.Exists(filePath)) return;
+
+            File.Delete(filePath);
+
+            await Context.Channel.SendSuccessAsync($"{user.NicknameUsername()}.chr ({uID}.chr) deleted.");
+        }
+
+        [Command("Delete")]
+        [RequireContext(ContextType.Guild)]
+        [OwnerOnly]
+        public async Task Delete(ulong user)
+        {
+            var sID = Context.Guild.Id;
+            var uID = user;
+
+            //Server directory path
+            string directory = @"data/characters/" + sID;
+
+            //Path to storage
+            string filePath = directory + @"/" + uID + ".chr";
+
+            //Woah hold up there, they've not had roles saved
+            if (!File.Exists(filePath)) return;
+
+            File.Delete(filePath);
+
+            await Context.Channel.SendSuccessAsync($"{uID}.chr deleted.");
+        }
+    } 
 }
