@@ -67,8 +67,6 @@ namespace MonikAIBot.Services
                     swapped = true;
                 else
                     joined = true;
-
-                return;
             }
 
             Guild G = null;
@@ -100,9 +98,10 @@ namespace MonikAIBot.Services
             if (swapped)
             {
                 if (prevChannelToSend != null)
-                    await prevChannelToSend.SendMessageAsync($"📣 {arg1.Mention} has left {prevChannel.Name} (gone to {ChannelName}).");
+                    await prevChannelToSend.SendMessageAsync($"📣 {arg1.Username} has left {prevChannel.Name}. (Moved to {ChannelName}).");
 
-                await channelToSend.SendMessageAsync($"📣 {arg1.Mention} has joined {ChannelName} (from {prevChannel.Name}).");
+                await channelToSend.SendMessageAsync($"📣 {arg1.Mention} has joined {ChannelName}. (Joined from {prevChannel.Name}).");
+                return;
             }
 
             if (joined)
@@ -111,7 +110,7 @@ namespace MonikAIBot.Services
                 return;
             }
 
-            await channelToSend.SendMessageAsync($"📣 {arg1.Mention} has left VC.");
+            await channelToSend.SendMessageAsync($"📣 {arg1.Username} has left VC.");
         }
 
         private async Task UserJoinedAsync(SocketGuildUser user)
