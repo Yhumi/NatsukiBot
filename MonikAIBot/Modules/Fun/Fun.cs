@@ -49,7 +49,10 @@ namespace MonikAIBot.Modules.Fun
 
             if (_pushButtonService.StartPBG(Game, (DiscordSocketClient)Context.Client))
             {
-                EmbedBuilder embed = new EmbedBuilder().WithOkColour().WithTitle("Push The Button Game.").WithDescription($"Would you push the button if **{benefit}** but **{consquence}**?")
+                EmbedBuilder embed = new EmbedBuilder().WithOkColour().WithTitle("Push The Button Game.").WithDescription($"Would you push the button if...")
+                    .AddField(new EmbedFieldBuilder().WithName($"Pro").WithValue($"{benefit}").WithIsInline(true))
+                    .AddField(new EmbedFieldBuilder().WithName("...").WithValue("*but*").WithIsInline(true))
+                    .AddField(new EmbedFieldBuilder().WithName($"Con?").WithValue($"{consquence}?").WithIsInline(true))
                     .WithFooter(new EmbedFooterBuilder().WithText($"Type yes/no now! You have {timeout / 1000} seconds."));
 
                 await Context.Channel.BlankEmbedAsync(embed);

@@ -27,7 +27,10 @@ namespace MonikAIBot.Modules.Fun.Services
 
                 EmbedBuilder embed = new EmbedBuilder().WithOkColour()
                     .WithTitle("Push the Button Game Results.")
-                    .WithDescription("Would you push the button if **" + game.Benefit.Trim() + "** but **" + game.Consequence.Trim() + "**?")
+                    .WithDescription($"Would you push the button if...")
+                    .AddField(new EmbedFieldBuilder().WithName($"Pro").WithValue($"{game.Benefit}").WithIsInline(true))
+                    .AddField(new EmbedFieldBuilder().WithName("...").WithValue("*but*").WithIsInline(true))
+                    .AddField(new EmbedFieldBuilder().WithName($"Con?").WithValue($"{game.Consequence}?").WithIsInline(true))
                     .AddField(new EmbedFieldBuilder().WithName("✅ Yes").WithValue(pushed).WithIsInline(true))
                     .AddField(new EmbedFieldBuilder().WithName("❌ No").WithValue(notpushed).WithIsInline(true));
 
