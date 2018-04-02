@@ -1013,5 +1013,21 @@ namespace MonikAIBot.Modules
 
             await Context.Channel.SendSuccessAsync($"{uID}.chr deleted.");
         }
+
+        [Command("ResetSteamID")]
+        [RequireContext(ContextType.Guild)]
+        [OwnerOnly]
+        public async Task ResetSteamID(IGuildUser user)
+        {
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                if (uow.User.GetSteamID(user.Id) != 0)
+                    uow.User.SetSteamID(user.Id, 0);
+                else
+                    return;
+            }
+
+            await Context.Channel.SendSuccessAsync($"Reset the SteamID for {user.NicknameUsername()}");
+        }
     } 
 }

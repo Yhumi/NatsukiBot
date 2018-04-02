@@ -19,5 +19,7 @@ namespace MonikAIBot.Services.Database.Repos
         string GetMinecraftUsername(ulong UserDiscordID);
         string SetPersonalWaifu(ulong UserDiscordID, string waifu);
         string GetPersonalWaifu(ulong UserDiscordID);
+        ulong GetSteamID(ulong UserDiscordID);
+        void SetSteamID(ulong UserDiscordID, ulong SteamID);
     }
 }

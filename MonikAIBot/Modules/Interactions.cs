@@ -10,6 +10,8 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Newtonsoft.Json;
+using MonikAIBot.Services.APIModels;
 
 namespace MonikAIBot.Modules
 {
@@ -19,16 +21,108 @@ namespace MonikAIBot.Modules
         private readonly Random _random;
         private readonly MonikAIBotLogger _logger;
         private readonly RCON _rcon;
+        private readonly Configuration _config;
 
         //API Stuff
         private readonly string APIUrl = "https://gelbooru.com/index.php?page=dapi&s=post&q=index&tags={tags}+-comic+-photo+rating%3asafe+-webm&pid={page}&limit={limit}";
         private int limit = 100;
 
-        public Interactions(Random random, MonikAIBotLogger logger, RCON rcon)
+        //Steam API Stuff
+        private readonly string SteamAPIUrl = "https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key={key}&steamid={id}&include_appinfo=1";
+        private readonly string VanityURL = "https://api.steampowered.com/ISteamUser/ResolveVanityURL/v1/?key={key}&vanityurl={url}";
+
+        public Interactions(Random random, MonikAIBotLogger logger, RCON rcon, Configuration config)
         {
             _random = random;
             _logger = logger;
             _rcon = rcon;
+            _config = config;
+        }
+
+        [Command("PickRandomGame"), Summary("Picks a random game from the user's steam library.")]
+        [Alias("SteamRandom")]
+        public async Task PickRandomGame()
+        {
+            if (_config.SteamAPIKey == "" || _config.SteamAPIKey == null)
+            {
+                await Context.Channel.SendErrorAsync("Please set a valid Steam API Key!");
+                return;
+            }
+
+            var userID = Context.User.Id;
+            ulong SteamID = 0;
+
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                SteamID = uow.User.GetSteamID(userID);
+            }
+
+            if (SteamID == 0)
+            {
+                await Context.Channel.SendErrorAsync("You haven't set your SteamID yet dummy!");
+                return;
+            }
+
+            var completeURL = SteamAPIUrl.Replace("{key}", _config.SteamAPIKey).Replace("{id}", SteamID.ToString());
+
+            var response = await APIResponse(completeURL);
+            var responseArray = JsonConvert.DeserializeObject<OwnedGamesResultContainer>(response);
+
+            var randomGame = responseArray.Result.Games.RandomItem();
+            
+            uint playtimeTwoWeeks = randomGame?.Playtime2Weeks ?? 0;            
+
+            EmbedBuilder embed = new EmbedBuilder().WithOkColour().WithTitle("Random Game")
+                //.WithUrl($"steam://run/{randomGame.AppID}")
+                .AddField(new EmbedFieldBuilder().WithName("Game Title").WithValue(randomGame.Name))
+                .AddField(new EmbedFieldBuilder().WithName("Total Playtime").WithValue(PlaytimeStringGen(randomGame.PlaytimeForever)).WithIsInline(true))
+                .AddField(new EmbedFieldBuilder().WithName("Playtime - Last 2 Weeks").WithValue(PlaytimeStringGen(playtimeTwoWeeks)).WithIsInline(true));
+
+            await Context.Channel.BlankEmbedAsync(embed);
+        }
+
+        private string PlaytimeStringGen(uint playtime)
+        {
+            if (playtime == 0)
+                return "Never Played";
+            else if (playtime < 60)
+                return $"{playtime} minutes";
+            else
+                return $"{Math.Floor((double)playtime / 60)} hours";
+        }
+
+        [Command("LinkSteam"), Summary("Links steam acc")]
+        public async Task LinkSteam(ulong id) => await LinkSteam(Context, id);
+
+        [Command("LinkSteam"), Summary("Links steam acc")]
+        public async Task LinkSteam(string id)
+        {
+            var response = await APIResponse(VanityURL.Replace("{key}", _config.SteamAPIKey).Replace("{url}", id));
+            var responseArray = JsonConvert.DeserializeObject<VanityURLContainer>(response);
+
+            if (responseArray.Result.Success != 1)
+            {
+                await Context.Channel.SendErrorAsync("Invalid steam URL!");
+                return;
+            }
+
+            await LinkSteam(Context, responseArray.Result.SteamID);
+        }
+
+        private async Task LinkSteam(ICommandContext Context, ulong id)
+        {
+            using (var uow = DBHandler.UnitOfWork())
+            {
+                if (uow.User.GetSteamID(Context.User.Id) == 0)
+                    uow.User.SetSteamID(Context.User.Id, id);
+                else
+                {
+                    await Context.Channel.SendErrorAsync("You have already set your SteamID");
+                    return;
+                }
+            }
+
+            await Context.Channel.SendSuccessAsync($"Set steamd ID for {Context.User.Username} to {id}");
         }
 
         [Command("Hug"), Summary("Hug a given user")]
@@ -96,7 +190,7 @@ namespace MonikAIBot.Modules
             IGuildUser user = null;
             var userList = await Context.Guild.GetUsersAsync();
             if (role == null)
-            {               
+            {
                 user = userList.RandomItem();
             }
             else
@@ -109,7 +203,7 @@ namespace MonikAIBot.Modules
             var msg = await Context.Channel.SendMessageAsync(user.Mention);
             msg.DeleteAfter(1);
             await Context.Channel.SendSuccessAsync("🎉 Raffle 🎉", $"{user.Username + "#" + user.Discriminator} has won {item}! Not like I wanted to give that to you though...");
-        } 
+        }
 
         private async Task<string> GetImageURL(string tags)
         {

@@ -29,7 +29,8 @@ namespace MonikAIBot.Services.Database.Repos.Impl
                     IsExempt = Exemption,
                     DateOfBirth = (DateTime)dt,
                     MinecraftUsername = "none",
-                    PersonalWaifu = ""
+                    PersonalWaifu = "",
+                    SteamID = 0
                 });
                 _context.SaveChanges();
             }
@@ -129,6 +130,21 @@ namespace MonikAIBot.Services.Database.Repos.Impl
         {
             User u = GetOrCreateUser(UserDiscordID);
             return u.PersonalWaifu;
+        }
+
+        public ulong GetSteamID(ulong UserDiscordID)
+        {
+            User u = GetOrCreateUser(UserDiscordID);
+            return u.SteamID;
+        }
+
+        public void SetSteamID(ulong UserDiscordID, ulong SteamID)
+        {
+            User u = GetOrCreateUser(UserDiscordID);
+            u.SteamID = SteamID;
+
+            _set.Update(u);
+            _context.SaveChanges();
         }
     }
 }

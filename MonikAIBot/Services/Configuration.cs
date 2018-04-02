@@ -15,5 +15,6 @@ namespace MonikAIBot.Services
         public ushort RconPort { get; set; }
         public string RCONPassword { get; set; }
         public ulong DefaultRole { get; set; }
+        public string SteamAPIKey { get; set; }
     }
 }
