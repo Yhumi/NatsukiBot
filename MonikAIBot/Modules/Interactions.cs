@@ -41,7 +41,7 @@ namespace MonikAIBot.Modules
 
         [Command("PickRandomGame"), Summary("Picks a random game from the user's steam library.")]
         [Alias("SteamRandom")]
-        public async Task PickRandomGame()
+        public async Task PickRandomGame([Remainder] string options = null)
         {
             if (_config.SteamAPIKey == "" || _config.SteamAPIKey == null)
             {
@@ -68,7 +68,24 @@ namespace MonikAIBot.Modules
             var response = await APIResponse(completeURL);
             var responseArray = JsonConvert.DeserializeObject<OwnedGamesResultContainer>(response);
 
-            var randomGame = responseArray.Result.Games.RandomItem();
+            var gamesList = responseArray.Result.Games;
+
+            switch (options.ToLower())
+            {
+                default:
+                case null:
+                    break;
+                case "played":
+                case "p":
+                    gamesList = gamesList.Where(x => x.PlaytimeForever > 0).ToList();
+                    break;
+                case "not played":
+                case "np":
+                    gamesList = gamesList.Where(x => x.PlaytimeForever == 0).ToList();
+                    break;
+            }                
+
+            var randomGame = gamesList.RandomItem();
             
             uint playtimeTwoWeeks = randomGame?.Playtime2Weeks ?? 0;            
 
