@@ -33,6 +33,12 @@ namespace MonikAIBot.Modules
             _cooldowns.GetOrSetupCommandCooldowns("NSFW");
         }
 
+        [Command("Waifuta")]
+        public async Task Waifuta() => await Waifu("futa");
+
+        [Command("Futa")]
+        public async Task Futa() => await GelbooruSearch("futa");
+
         [Command("Waifu")]
         public async Task Waifu([Remainder] string extraTags = null)
         {
