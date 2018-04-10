@@ -78,7 +78,7 @@ namespace MonikAIBot
             provider.GetRequiredService<DeletedMessageHandler>();
 
             //Stops crashing due to these services below
-            await Task.Delay(2000);
+            await Task.Delay(4000);
 
             //Start birthdays
             int hours = 9;

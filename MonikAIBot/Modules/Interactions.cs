@@ -366,6 +366,8 @@ namespace MonikAIBot.Modules
             if (lastImageInChannel + new TimeSpan(0, 5, 0) > curTime)
                 return false;
 
+            _cooldowns.AddUserCooldowns("Interactions", ChID, curTime);
+
             return true;
         }
 
