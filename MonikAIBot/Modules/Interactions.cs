@@ -22,6 +22,7 @@ namespace MonikAIBot.Modules
         private readonly MonikAIBotLogger _logger;
         private readonly RCON _rcon;
         private readonly Configuration _config;
+        private readonly Cooldowns _cooldowns;
 
         //API Stuff
         private readonly string APIUrl = "https://gelbooru.com/index.php?page=dapi&s=post&q=index&tags={tags}+-comic+-photo+rating%3asafe+-webm&pid={page}&limit={limit}";
@@ -31,12 +32,15 @@ namespace MonikAIBot.Modules
         private readonly string SteamAPIUrl = "https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key={key}&steamid={id}&include_appinfo=1";
         private readonly string VanityURL = "https://api.steampowered.com/ISteamUser/ResolveVanityURL/v1/?key={key}&vanityurl={url}";
 
-        public Interactions(Random random, MonikAIBotLogger logger, RCON rcon, Configuration config)
+        public Interactions(Random random, MonikAIBotLogger logger, RCON rcon, Configuration config, Cooldowns CD)
         {
             _random = random;
             _logger = logger;
             _rcon = rcon;
             _config = config;
+            _cooldowns = CD;
+
+            _cooldowns.GetOrSetupCommandCooldowns("Interactions");
         }
 
         [Command("PickRandomGame"), Summary("Picks a random game from the user's steam library.")]
@@ -147,6 +151,13 @@ namespace MonikAIBot.Modules
         {
             IGuildUser CurUser = (IGuildUser)Context.User;
             if (Context.User.Id == user.Id) return;
+
+            if (!AllowImage(Context.Channel.Id))
+            {
+                await Context.Channel.SendSuccessAsync("Hugging <3", $"{CurUser.NicknameUsername()} is giving {user.NicknameUsername()} a hug! <3");
+                return;
+            }
+
             string imageURL = await GetImageURL("hug+animated");
 
             //Big issue?!
@@ -160,13 +171,19 @@ namespace MonikAIBot.Modules
         [Alias("GHug", "HugAll", "HugA")]
         public async Task GroupHug()
         {
+            if (!AllowImage(Context.Channel.Id))
+            {
+                await Context.Channel.SendSuccessAsync("Group Hug <3", "Share the love, everyone <3");
+                return;
+            }
+
             string imageURL = await GetImageURL("group_hug");
 
             //Big issue?!
             if (imageURL == null) return;
 
             //We have the URL let us use it
-            await Context.Channel.SendPictureAsync("Group Hug <3", "", $"{imageURL}");
+            await Context.Channel.SendPictureAsync("Group Hug <3", "Share the love, everyone <3", $"{imageURL}");
         }
 
         [Command("Pet"), Summary("Pet a given user")]
@@ -175,6 +192,13 @@ namespace MonikAIBot.Modules
         {
             IGuildUser CurUser = (IGuildUser)Context.User;
             if (Context.User.Id == user.Id) return;
+
+            if (!AllowImage(Context.Channel.Id))
+            {
+                await Context.Channel.SendSuccessAsync("Patting <3", $"{CurUser.NicknameUsername()} is patting {user.NicknameUsername()}! <3");
+                return;
+            }
+
             string imageURL = await GetImageURL("petting+animated");
 
             //Big issue?!
@@ -189,6 +213,13 @@ namespace MonikAIBot.Modules
         {
             IGuildUser CurUser = (IGuildUser)Context.User;
             if (Context.User.Id == user.Id) return;
+
+            if (!AllowImage(Context.Channel.Id))
+            {
+                await Context.Channel.SendSuccessAsync("Kissing <3", $"{CurUser.NicknameUsername()} is giving {user.NicknameUsername()} a kiss! <3");
+                return;
+            }
+
             string imageURL = await GetImageURL("kiss+animated");
 
             //Big issue?!
@@ -323,6 +354,19 @@ namespace MonikAIBot.Modules
             {
                 return await httpClient.GetStringAsync(fullURL);
             }
+        }
+
+        private bool AllowImage(ulong ChID)
+        {
+            DateTime curTime = DateTime.Now;
+            DateTime lastImageInChannel;
+
+            lastImageInChannel = _cooldowns.GetUserCooldownsForCommand("Interactions", ChID);
+
+            if (lastImageInChannel + new TimeSpan(0, 5, 0) > curTime)
+                return false;
+
+            return true;
         }
 
         private async Task<XElement[]> SetupReponse(string tags, int page)
