@@ -76,6 +76,7 @@ namespace MonikAIBot
             provider.GetRequiredService<CommandHandler>();
             provider.GetRequiredService<ImageRateLimitHandler>();
             provider.GetRequiredService<DeletedMessageHandler>();
+            provider.GetRequiredService<DisconnectHandler>();
 
             //Stops crashing due to these services below
             await Task.Delay(4000);
@@ -116,6 +117,7 @@ namespace MonikAIBot
             _map.AddSingleton<CommandHandler>();
             _map.AddSingleton<ImageRateLimitHandler>();
             _map.AddSingleton<DeletedMessageHandler>();
+            _map.AddSingleton<DisconnectHandler>();
             _map.AddSingleton(_config);
         }
 
