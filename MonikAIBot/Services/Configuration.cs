@@ -11,9 +11,6 @@ namespace MonikAIBot.Services
         public ulong[] Owners { get; set; }
         public ulong BirthdayChannel { get; set; }
         public ulong[] NSFWChannels { get; set; }
-        public string RconIP { get; set; }
-        public ushort RconPort { get; set; }
-        public string RCONPassword { get; set; }
         public ulong DefaultRole { get; set; }
         public string SteamAPIKey { get; set; }
         public bool Shutdown { get; set; }
