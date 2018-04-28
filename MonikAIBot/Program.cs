@@ -103,7 +103,8 @@ namespace MonikAIBot
             _map.AddSingleton(_client);
             _map.AddSingleton(_logger);
             _map.AddSingleton(_random);
-            _map.AddSingleton(_rcon);
+            if (_rcon != null)
+                _map.AddSingleton(_rcon);
             _map.AddSingleton(new Cooldowns());
 
             //For each module do the following

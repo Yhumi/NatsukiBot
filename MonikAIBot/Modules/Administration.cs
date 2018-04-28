@@ -22,10 +22,10 @@ namespace MonikAIBot.Modules
         private readonly TimeSpan defaultNull = TimeSpan.FromSeconds(1);
         private readonly DiscordSocketClient _client;
         private readonly Random _random;
-        private readonly RCON _rcon;
+        private readonly RCON _rcon = null;
         private readonly Configuration _config;
 
-        public Administration(Random random, DiscordSocketClient client, RCON rcon, Configuration config)
+        public Administration(Random random, DiscordSocketClient client, Configuration config, RCON rcon = null)
         {
             _random = random;
             _client = client;
