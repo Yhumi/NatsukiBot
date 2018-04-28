@@ -1,5 +1,4 @@
-﻿using CoreRCON;
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using MonikAIBot.Services;
 using MonikAIBot.Services.Database.Models;
@@ -20,7 +19,6 @@ namespace MonikAIBot.Modules
     {
         private readonly Random _random;
         private readonly MonikAIBotLogger _logger;
-        private readonly RCON _rcon;
         private readonly Configuration _config;
         private readonly Cooldowns _cooldowns;
 
@@ -32,11 +30,10 @@ namespace MonikAIBot.Modules
         private readonly string SteamAPIUrl = "https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key={key}&steamid={id}&include_appinfo=1";
         private readonly string VanityURL = "https://api.steampowered.com/ISteamUser/ResolveVanityURL/v1/?key={key}&vanityurl={url}";
 
-        public Interactions(Random random, MonikAIBotLogger logger, RCON rcon, Configuration config, Cooldowns CD)
+        public Interactions(Random random, MonikAIBotLogger logger, Configuration config, Cooldowns CD)
         {
             _random = random;
             _logger = logger;
-            _rcon = rcon;
             _config = config;
             _cooldowns = CD;
 
@@ -301,47 +298,6 @@ namespace MonikAIBot.Modules
             }
 
             return null;
-        }
-
-        [Command("MCWhitelist"), Summary("Adds a user to the whitelist.")]
-        [Alias("WhitelistMe", "MCWL")]
-        public async Task MCWhitelist([Remainder] string username)
-        {
-            if (_rcon == null)
-            {
-                await Context.Channel.SendErrorAsync("No minecraft server specified.");
-                return;
-            }
-
-            using (var uow = DBHandler.UnitOfWork())
-            {
-                string MCName = uow.User.GetMinecraftUsername(Context.User.Id);
-                if (MCName != "none")
-                {
-                    await Context.Channel.SendErrorAsync("Only one username per Discord user.");
-                    return;
-                }
-
-                //Add the username
-                try
-                {
-                    //Connect
-                    await _rcon.ConnectAsync();
-
-                    //try to whitelist
-                    await _rcon.SendCommandAsync($"whitelist add {username}");
-
-                    //Add their username
-                    uow.User.SetMinecraftUsername(Context.User.Id, username);
-
-                    //Tell them it worked
-                    await Context.Channel.SendSuccessAsync("You are now whitelisted!");
-                }
-                catch (Exception)
-                {
-                    await Context.Channel.SendErrorAsync("Error whitelisting you.");
-                }
-            }
         }
 
         private async Task<string> APIResponse(string fullURL)

@@ -1,5 +1,4 @@
-﻿using CoreRCON;
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using Discord.Net;
 using Discord.WebSocket;
@@ -22,14 +21,12 @@ namespace MonikAIBot.Modules
         private readonly TimeSpan defaultNull = TimeSpan.FromSeconds(1);
         private readonly DiscordSocketClient _client;
         private readonly Random _random;
-        private readonly RCON _rcon = null;
         private readonly Configuration _config;
 
-        public Administration(Random random, DiscordSocketClient client, Configuration config, RCON rcon = null)
+        public Administration(Random random, DiscordSocketClient client, Configuration config)
         {
             _random = random;
             _client = client;
-            _rcon = rcon;
             _config = config;
         }
 
@@ -579,64 +576,6 @@ namespace MonikAIBot.Modules
             }
 
             await Context.Channel.SendSuccessAsync($"Removed ID from AutoBan List: {ID}");
-        }
-
-        [Command("ExecuteMCRCON")]
-        [Alias("ExecuteRCON", "MC")]
-        [OwnerOnly]
-        public async Task ExecuteMCRCON([Remainder] string command)
-        {
-            if (_rcon == null)
-            {
-                await Context.Channel.SendErrorAsync("No minecraft server specified.");
-                return;
-            }
-
-            try
-            {
-                await _rcon.ConnectAsync();
-                await _rcon.SendCommandAsync(command);
-                await Context.Channel.SendSuccessAsync($"Command \"{command}\" executed successfully.");
-            }
-            catch (Exception)
-            {
-                await Context.Channel.SendErrorAsync("Command failed.");
-            }
-        }
-
-        [Command("ResetMinecraftName")]
-        [Alias("ResetMC")]
-        [OwnerOnly]
-        public async Task ResetMinecraftName(IGuildUser user)
-        {
-            if (_rcon == null)
-            {
-                await Context.Channel.SendErrorAsync("No minecraft server specified.");
-                return;
-            }
-
-            using (var uow = DBHandler.UnitOfWork())
-            {
-                string GetMCName = uow.User.GetMinecraftUsername(user.Id);
-                if (GetMCName == "none") return;
-
-                //Now unwhitelist that name
-                try
-                {
-                    await _rcon.ConnectAsync();
-                    await _rcon.SendCommandAsync($"whitelist remove {GetMCName}");
-                }
-                catch (Exception)
-                {
-                    return;
-                }
-
-                //Now set their MC name to none
-                uow.User.SetMinecraftUsername(user.Id, "none");
-
-                //Now we're done
-                await Context.Channel.SendSuccessAsync("Reset the Minecraft name for that dummy~");
-            }
         }
 
         [Command("AddWaifu")]

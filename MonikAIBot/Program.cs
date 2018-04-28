@@ -8,8 +8,6 @@ using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using CoreRCON;
-using CoreRCON.Parsers.Standard;
 using System.Net;
 using MonikAIBot.Modules.Fun;
 
@@ -34,8 +32,6 @@ namespace MonikAIBot
         private BirthdayService birthdayService = new BirthdayService();
         private BotStatusService statusService = new BotStatusService();
 
-        private RCON _rcon = null;
-
         private Program()
         {
             _client = new DiscordSocketClient(new DiscordSocketConfig
@@ -55,12 +51,6 @@ namespace MonikAIBot
             _config = JsonConvert.DeserializeObject<Configuration>(File.ReadAllText(@"data/config.json"));
             _config.Shutdown = false;
             _random = new Random();
-
-            if (_config.RconIP != "")
-            {
-                _rcon = new RCON(IPAddress.Parse(_config.RconIP), _config.RconPort, _config.RCONPassword);
-                _rcon.OnDisconnected += OnDisconnected;
-            }
 
             //Command Setup
             await InitCommands();
@@ -92,19 +82,12 @@ namespace MonikAIBot
             await Task.Delay(-1);
         }
 
-        private void OnDisconnected()
-        {
-            _logger.Log("Automatically Disconnected", "Rcon");
-        }
-
         private async Task InitCommands()
         {
             //Repeat for all service classes
             _map.AddSingleton(_client);
             _map.AddSingleton(_logger);
             _map.AddSingleton(_random);
-            if (_rcon != null)
-                _map.AddSingleton(_rcon);
             _map.AddSingleton(new Cooldowns());
 
             //For each module do the following
