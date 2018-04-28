@@ -59,10 +59,8 @@ namespace MonikAIBot
             if (_config.RconIP != "")
             {
                 _rcon = new RCON(IPAddress.Parse(_config.RconIP), _config.RconPort, _config.RCONPassword);
-            }                             
-
-            //Set ondisconnect
-            _rcon.OnDisconnected += OnDisconnected;
+                _rcon.OnDisconnected += OnDisconnected;
+            }
 
             //Command Setup
             await InitCommands();
