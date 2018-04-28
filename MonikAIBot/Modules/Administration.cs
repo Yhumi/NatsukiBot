@@ -41,6 +41,9 @@ namespace MonikAIBot.Modules
             //Now tell the user we did it! Yay
             await Context.Channel.SendSuccessAsync("Bye-bye!");
 
+            //Set config shutdown to 1
+            _config.Shutdown = true;
+
             //Safely stop the bot
             await Context.Client.StopAsync();
 
