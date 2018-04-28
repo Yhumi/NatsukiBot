@@ -325,7 +325,7 @@ namespace MonikAIBot.Modules
 
         [Command("SetDeletedLogChannel")]
         [Alias("SDLC")]
-        [OwnerOnly]
+        [RequireUserPermission(GuildPermission.Administrator)]
         public async Task SetDeletedLogChannel(IGuildChannel channel)
         {
             using (var uow = DBHandler.UnitOfWork())
@@ -338,7 +338,7 @@ namespace MonikAIBot.Modules
 
         [Command("SetDeleteLog")]
         [Alias("SDL")]
-        [OwnerOnly]
+        [RequireUserPermission(GuildPermission.Administrator)]
         public async Task SetDeleteLog(bool t)
         {
             using (var uow = DBHandler.UnitOfWork())
@@ -357,7 +357,7 @@ namespace MonikAIBot.Modules
 
         [Command("IsDeleteLoggingEnabled")]
         [Alias("IDLE")]
-        [OwnerOnly]
+        [RequireUserPermission(GuildPermission.Administrator)]
         public async Task IsDeleteLoggingEnabled()
         {
             Guild G = null;
@@ -375,7 +375,7 @@ namespace MonikAIBot.Modules
         }
 
         [Command("Greet")]
-        [OwnerOnly]
+        [RequireUserPermission(GuildPermission.Administrator)]
         public async Task Greet(bool t)
         {
             using (var uow = DBHandler.UnitOfWork())
@@ -392,7 +392,7 @@ namespace MonikAIBot.Modules
 
         [Command("SetGreetChannel")]
         [Alias("SGRC")]
-        [OwnerOnly]
+        [RequireUserPermission(GuildPermission.Administrator)]
         public async Task SetGreetChannel(IGuildChannel channel)
         {
             using (var uow = DBHandler.UnitOfWork())
@@ -405,7 +405,7 @@ namespace MonikAIBot.Modules
 
         [Command("AddGreeting")]
         [Alias("AGR")]
-        [OwnerOnly]
+        [RequireUserPermission(GuildPermission.Administrator)]
         public async Task AddGreeting([Remainder] string message)
         {
             using (var uow = DBHandler.UnitOfWork())
@@ -418,7 +418,7 @@ namespace MonikAIBot.Modules
 
         [Command("DeleteGreeting")]
         [Alias("DGR")]
-        [OwnerOnly]
+        [RequireUserPermission(GuildPermission.Administrator)]
         public async Task DeleteGreeting([Remainder] string message)
         {
             using (var uow = DBHandler.UnitOfWork())
@@ -431,7 +431,7 @@ namespace MonikAIBot.Modules
 
         [Command("DeleteGreeting")]
         [Alias("DGR")]
-        [OwnerOnly]
+        [RequireUserPermission(GuildPermission.Administrator)]
         public async Task DeleteGreeting(int ID)
         {
             using (var uow = DBHandler.UnitOfWork())
@@ -444,7 +444,7 @@ namespace MonikAIBot.Modules
 
         [Command("ShowGreetings")]
         [Alias("SG")]
-        [OwnerOnly]
+        [RequireUserPermission(GuildPermission.Administrator)]
         public async Task ShowGreetings(int page = 0)
         {
             if (page != 0)
@@ -476,7 +476,7 @@ namespace MonikAIBot.Modules
 
         [Command("AddBL")]
         [Alias("ABL")]
-        [OwnerOnly]
+        [RequireUserPermission(GuildPermission.Administrator)]
         public async Task AddBL([Remainder] string s)
         {
             using (var uow = DBHandler.UnitOfWork())
@@ -489,7 +489,7 @@ namespace MonikAIBot.Modules
 
         [Command("DeleteBL")]
         [Alias("DBL")]
-        [OwnerOnly]
+        [RequireUserPermission(GuildPermission.Administrator)]
         public async Task DeleteBL([Remainder] string message)
         {
             using (var uow = DBHandler.UnitOfWork())
@@ -502,7 +502,7 @@ namespace MonikAIBot.Modules
 
         [Command("DeleteBL")]
         [Alias("DBL")]
-        [OwnerOnly]
+        [RequireUserPermission(GuildPermission.Administrator)]
         public async Task DeleteBL(int ID)
         {
             using (var uow = DBHandler.UnitOfWork())
@@ -515,7 +515,7 @@ namespace MonikAIBot.Modules
 
         [Command("VCNotify")]
         [Alias("VCN")]
-        [OwnerOnly]
+        [RequireUserPermission(GuildPermission.Administrator)]
         public async Task VCNotify(bool t)
         {
             using (var uow = DBHandler.UnitOfWork())
@@ -532,7 +532,7 @@ namespace MonikAIBot.Modules
 
         [Command("SetVCNotifyChannel")]
         [Alias("SVCNC")]
-        [OwnerOnly]
+        [RequireUserPermission(GuildPermission.Administrator)]
         public async Task SetVCNotifyChannel(IGuildChannel channel)
         {
             var user = (IGuildUser)Context.User;
@@ -851,7 +851,7 @@ namespace MonikAIBot.Modules
         }
 
         [Command("ResetPersonalWaifu")]
-        [OwnerOnly]
+        [RequireUserPermission(GuildPermission.Administrator)]
         public async Task ResetPersonalWaifu(IGuildUser user)
         {
             using (var uow = DBHandler.UnitOfWork())
@@ -1016,7 +1016,7 @@ namespace MonikAIBot.Modules
 
         [Command("ResetSteamID")]
         [RequireContext(ContextType.Guild)]
-        [OwnerOnly]
+        [RequireUserPermission(GuildPermission.Administrator)]
         public async Task ResetSteamID(IGuildUser user)
         {
             using (var uow = DBHandler.UnitOfWork())
